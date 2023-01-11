@@ -63,12 +63,11 @@ const App = () => {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          setMe({...docSnap.data(), displayName: user.displayName})
+          setMe({...docSnap.data(), displayName: user.displayName, photoURL: user.photoURL})
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
