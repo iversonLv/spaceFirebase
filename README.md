@@ -68,3 +68,32 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### Routes
+
+/login
+
+/register
+
+/profile
+
+
+### Important
+
+You need to replace firebase-config.js data of firebaseConfig with yours
+
+You need enable your firebase application `Authentication -> Sign-in methon -> Email/Password`
+
+You need to remove `If False;` of your firebase app `Cloud Firestore -> Rules`
+As follows:
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write
+    }
+  }
+}
+```
