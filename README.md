@@ -81,7 +81,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ### Important
 
-You need to replace firebase-config.js data of firebaseConfig with yours
+You need to replace/create a .env file with below data of firebaseConfig with yours
+| Variable key                       | Variable value    | How could I find them                                                                                                                                                                                                   |
+|------------------------------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| REACT_APP_FIREBASE_BUCKET_URL      | BUCKET_URL        | Go to your firebase console, check Build -> storage, there is a URL at top table starts with URL like `gs://api-project-xxxxxx.appspot.com`                                                                                   |
+| REACT_APP_FIREBASE_APIKEY          | apiKey            | Go to your firebase console, top left there is setting icon right of the title 'Project Overview', click it and select 'Project settings'-> General tab -> Your apps -> SDK setup and configuration -> Select npm radio |
+| REACT_APP_FIREBASE_AUTHDOMAIN      | authDomain        |                                                                                                                                                                                                                         |
+| REACT_APP_FIREBASE_PROJECTID       | projectId         |                                                                                                                                                                                                                         |
+| REACT_APP_FIREBASE_STORAGEBUCKET   | storageBucket     |                                                                                                                                                                                                                         |
+| REACT_APP_FIREBASE_MESSAGESENDERID | messagingSenderId |                                                                                                                                                                                                                         |
+| REACT_APP_FIREBASE_APPID           | appId             |                                                                                                                                                                                                                         |
 
 You need enable your firebase application `Authentication -> Sign-in methon -> Email/Password`
 

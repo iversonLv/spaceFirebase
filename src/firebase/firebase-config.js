@@ -12,16 +12,16 @@ export const USERS_COLLECTION = 'users'
 export const POSTS_COLLECTION = 'posts'
 export const SPACES_COLLECTION = 'spaces'
 export const COMMENTS_COLLECTION = 'comments'
-export const BUCKET_URL = 'gs://api-project-842573764225.appspot.com'
+export const BUCKET_URL = process.env.REACT_APP_FIREBASE_BUCKET_URL
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCmmz5VF3TdTjLxWCK6L-omHCGtJgEJLFU",
-  authDomain: "api-project-842573764225.firebaseapp.com",
-  projectId: "api-project-842573764225",
-  storageBucket: "api-project-842573764225.appspot.com",
-  messagingSenderId: "842573764225",
-  appId: "1:842573764225:web:0e5d2a0963f854ddcb9f80"
+  apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTHDOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECTID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGESENDERID,
+  appId: process.env.REACT_APP_FIREBASE_APPID
 };
 
 
