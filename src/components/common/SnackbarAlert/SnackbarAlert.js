@@ -1,7 +1,7 @@
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
-const SnackbarAlert = ({ open, handleClose, message }) => {
+const SnackbarAlert = ({ open, handleClose, message, severity='success' }) => {
   return (
     <Snackbar
       open={open}
@@ -13,7 +13,7 @@ const SnackbarAlert = ({ open, handleClose, message }) => {
       }}
     >
       <Alert
-        severity="warning"
+        severity={severity}
         onClose={handleClose}
         sx={{ width: '100%' }}>
         {message}

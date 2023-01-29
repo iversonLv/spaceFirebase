@@ -1,30 +1,43 @@
 import {useNavigate } from 'react-router-dom'
 
+// constants
+import  { LOGIN_URL, REGISTER_URL, HOME_URL, PROFILE_URL, APP_HEADING, SPACES_URL } from '../../../constants'
+
 // MUI component
 import { Box } from "@mui/system"
-
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import { Tooltip } from '@mui/material'
+
+// MUI icons
+import LogoutIcon from '@mui/icons-material/Logout';
+
+// context
+import useAuth from '../../../firebase/auth'
+
+// component
+import NavBtn from '../NavBtn/NavBtn'
 
 
 const loginedNavItem = [
-  {'label': 'Home', 'route': '/home'}, 
-  {'label': 'Profile', 'route': '/profile'}, 
-  {'label': 'Create Learning Space', 'route': '/createLearningSpace'}, 
+  {'label': 'Home', 'route': HOME_URL}, 
+  {'label': 'Profile', 'route': PROFILE_URL}, 
+  {'label': 'Create Learning Space', 'route': `${SPACES_URL}/create`}, 
 ];
 const nonLoginedNavItem = [
-  {'label': 'Login', 'route': '/login'}, 
-  {'label': 'Register', 'route': '/register'}, 
+  {'label': 'Home', 'route': HOME_URL}, 
+  {'label': 'Login', 'route': LOGIN_URL}, 
+  {'label': 'Register', 'route': REGISTER_URL}, 
 ];
 
 const Header = () => {
-  const authToken = sessionStorage.getItem('Auth Token')
+  const { logout, authUser, isLoading } = useAuth()
   const navigate = useNavigate()
   const handleLogout = () => {
-    sessionStorage.removeItem('Auth Token');
-    navigate('/login')
+    logout()
+    navigate(LOGIN_URL)
   }
   
   return (
@@ -36,25 +49,23 @@ const Header = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            TOPCODER SKILL REACTJS BUILDER
+            {APP_HEADING}
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {authToken && (<>
+            {!!authUser && !isLoading && (<>
             {loginedNavItem.map(item => (
-              <Button key={item.route} sx={{ color: '#fff' }} onClick={() => navigate(item.route)}>
-                {item.label}
-              </Button>
+              <NavBtn {...item} key={item.route}/>
             ))}
-            <Button sx={{ color: '#fff' }} onClick={handleLogout}>
-              Logout
-            </Button>
+            <Tooltip title='Logout' placement="bottom">
+              <IconButton  sx={{ color: '#fff' }} onClick={handleLogout}>
+                <LogoutIcon/>
+              </IconButton >
+            </Tooltip>
             </>)}
             {/* If not logined, show login and register button */}
-            {!authToken && 
+            {!authUser && !isLoading && 
               nonLoginedNavItem.map(item => (
-                <Button key={item.route} sx={{ color: '#fff' }} onClick={() => navigate(item.route)}>
-                  {item.label}
-                </Button>
+                <NavBtn {...item}  key={item.route}/>
               ))
             }
           </Box>

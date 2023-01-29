@@ -69,15 +69,15 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-
 ### Routes
 
+/
 /login
-
 /register
-
 /profile
-
+/users/:uid
+/spaces:/:spaceId
+/createLearningSpace
 
 ### Important
 
@@ -85,9 +85,10 @@ You need to replace firebase-config.js data of firebaseConfig with yours
 
 You need enable your firebase application `Authentication -> Sign-in methon -> Email/Password`
 
-You need to remove `If False;` of your firebase app `Cloud Firestore -> Rules`
+You need to remove `: if false;` of your firebase app `Firestore Database -> Rules`
 As follows:
-```
+
+```text
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -97,3 +98,50 @@ service cloud.firestore {
   }
 }
 ```
+
+You might need to build the index of your firebase app `Firestore Database -> Indexs` or console will show error to direct you to your app to enable the indexs  
+
+You need to remove `: if false;` of your firebase app `Storage -> Rules`
+
+```text
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write
+    }
+  }
+}
+```
+
+### Route, URL
+
+As URL might set many files, so I used constants for route URL in order to aviod DRY  
+All route URLs are set at `constants.js`
+
+[x] same router /spaces/:spaceId not load  
+[x] form validation for login, register, create space  
+[70%] split the component smaller  
+[x] markdown post, comment, create space  
+[x] like dislike  
+[x] login, register auth code move to firebase  
+[] test-data for user, posts, comments  
+[x] create space by login use  
+[x] join will duplicated, update  
+[x] SpaceCard loading skeleton  
+[] modal for leave  
+[x] snackbar for leave/join message  
+[90%] edit space, thumbnail not fetch yet, switch to create space, data not reset yet  
+[x] after create switch to profile page  
+[x] Updated firebase default array method rather than javascript push/filter  
+[x] Home page, leave/join not dynamic update, move the number into avatar group  
+[x] filter keywords, navigate back home, won't reset  
+[] Delete post/comment: TODO, the related data should be removed  
+[90%] Edit post/comment, page can't scroll  
+[] Loading look buggy  
+[x] click snackbar for leave/join will direct to detail page  
+[x] CommonAvatar for all tooltip+avatar except profile top avatar  
+[x] xxx ago with date-fns/formatDistanceToNow  
+
+Home page and space detail page are for all users to view
+If non login, some button will change to disabled or show `SIGN UP to xxx`  

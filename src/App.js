@@ -1,9 +1,5 @@
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { db } from './firebase-config'
-import { setDoc, doc, getDoc } from "firebase/firestore";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged} from 'firebase/auth'
-import './App.css';
 
 // MUI component
 import { Box } from "@mui/system"
@@ -13,196 +9,138 @@ import LinearProgress from '@mui/material/LinearProgress'
 // components
 import Form from './components/common/Form/Form'
 import Header from './components/common/Header/Header'
-import SnackbarAlert from './components/common/SnackbarAlert/SnackbarAlert'
+
+// Pages
 import Home from './components/Home/Home'
 import Profile from './components/Profile/Profile'
+import User from './components/User/User'
+import Space from './components/Space/Space'
 import NotFound from './components/NotFound/NotFound'
-import CreateLearningSpace from './components/CreateLearningSpace/CreateLearningSpace'
+
+// context 
+import useAuth from './firebase/auth'
+
+// constatns
+import { HOME_URL, LOGIN_URL, REGISTER_URL, USERS_URL, SPACES_URL, PROFILE_URL, CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE } from './constants'
+import CreateEditSpace from './components/CreateEditSpace/CreateEditSpace'
+
+
+const RequireAuth = ({ children }) => {
+  const { authUser } = useAuth()
+  const  location = useLocation();
+
+  if (!authUser) {
+    return <Navigate to={LOGIN_URL} state={{ from: location }} replace />;
+  }
+
+  return children;
+}
 
 const App = () => {
-  const navigate = useNavigate()
-
+ 
+  const { authUser, isLoading } = useAuth()
+  const location = useLocation();
+  const navigate = useNavigate();
   // loading state
   const [loading, setLoading] = useState(false);
 
-  // profile state
-  const [me, setMe] = useState({})
-
-  // snack bar state 
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  // user login/register state
-  const [email, setEmail] = useState('')
-  const [displayName, setDisplayName] = useState('')
-  const [password, setPassword] = useState('')
-  const [country, setCountry] = useState('')
-  const [biography, setBiography] = useState('')
-  const [interests, setInterests] = useState([])
-  
   useEffect(() => {
-    const authToken = sessionStorage.getItem('Auth Token')
-    if (authToken) {
-      navigate('/home')
+    // if current login use and loading end
+    // and current path is not login and register page, will direct to home page
+    if (authUser && !isLoading && (location.pathname === LOGIN_URL || location.pathname === REGISTER_URL)) {
+      navigate(HOME_URL)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authUser, isLoading]);
 
-  const auth = getAuth();
 
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setMe({...docSnap.data(), displayName: user.displayName, photoURL: user.photoURL})
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      }
-    });
-  }, [auth, setMe])
-
-  const handleAction = async (action) => {
-    const authentication = getAuth()
-    // Init show the loading bar
-    setLoading(true)
-    setMessage('')
-    setOpen(false);
-    if (action === 'login') {
-      signInWithEmailAndPassword(authentication, email, password)
-        .then((res) => {
-          
-          // After loginning, hide the loading bar
-          setLoading(false)
-          // After loginning, navigation to home page
-          navigate('/home')
-          // After logining, set sessionStoreage
-          sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken)
-          // After loginning, reset the login form
-          setEmail('')
-          setPassword('')
-        }).catch((error) => {
-          // Catch error, loading bar disappear
-          setLoading(false)
-          // If error, show the snackbar
-          
-          setOpen(true);
-          setMessage(error.code);
-        })
-    }
-    if (action === 'register') {
-      try {
-
-        const res = await createUserWithEmailAndPassword(authentication, email, password)
-        await setDoc(doc(db, "users", res.user.uid), {
-          biography,
-          country,
-          interests
-        });
-        await updateProfile(res.user, {
-          displayName,
-        });
-  
-        // After loginning, hide the loading bar
-        setLoading(false)
-        sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken)
-        // After loginning, navigation to home page
-        navigate('/home')
-        // After logining, set sessionStoreage
-        // After loginning, reset the login form
-        setEmail('')
-        setPassword('')
-        setCountry('')
-        setBiography('')
-        setDisplayName('')
-        setInterests([])
-      } catch(error) {
-        // Catch error, loading bar disappear
-        setLoading(false)
-        // If error, show the snackbar
-        // Specific error show specific message
-        setOpen(true);
-        setMessage(error.code);
-      }
-    }
-  }
   return (
-      <div className='App'>
-        <>
+      isLoading ? 
+        <LinearProgress color="secondary"/>
+      :
+      <div>
+          {loading && <LinearProgress color="secondary" sx={{zIndex: 1101}}/>}
           <Header />
           <Box component="main" sx={{ p: 3 }}>
-            <Toolbar />
-            {loading && (<Box sx={{ width: '100%' }}>
-              <LinearProgress color="secondary"/>
-            </Box>)
-            }
+            <Toolbar /> 
             <Routes>
               <Route
-                path="/login"
+                path={LOGIN_URL}
                 element={
                   <Form
                     title="Login"
                     loading={loading}
-                    setEmail={setEmail}
-                    setPassword={setPassword}
-                    handleAction={() => handleAction("login")}
+                    setLoading={setLoading}
                   />
                 }/>
               <Route
-                path="/Register"
+                path={REGISTER_URL}
                 element={
                   <Form
                     title="Register"
                     loading={loading}
-                    setEmail={setEmail}
-                    setPassword={setPassword}
-                    setCountry={setCountry}
-                    setBiography={setBiography}
-                    setDisplayName={setDisplayName}
-                    interests={interests}
-                    setInterests={setInterests}
-                    handleAction={() => handleAction("register")}
+                    setLoading={setLoading}
                   />
                 }/>
-              <Route
-                path="/home"
-                element={
-                  <Home me={me}/>
-                }
-              />
-              <Route
-                path="/createLearningSpace"
-                element={
-                  <CreateLearningSpace />
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <Profile me={me} setMe={setMe} />
-                }
-              />
+                <Route
+                  path={HOME_URL}
+                  element={
+                    <Home/>
+                  }
+                />
+                <Route
+                  path={`${SPACES_URL}/create`}
+                  element={
+                    <RequireAuth>
+                      <CreateEditSpace
+                        setLoading={setLoading}
+                        loading={loading}
+                        pageTitle={CREATE_SPACE_PAGE_TITLE}
+                      />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={`${SPACES_URL}/:spaceId/edit`}
+                  element={
+                    <RequireAuth>
+                      <CreateEditSpace
+                        setLoading={setLoading}
+                        loading={loading}
+                        pageTitle={EDIT_SPACE_PAGE_TITLE}
+                      />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={`${SPACES_URL}/:spaceId`}
+                  element={
+                    <Space setLoading={setLoading}/>
+                  }
+                />
+                <Route
+                  path={`${USERS_URL}/:uid`}
+                  element={
+                    <RequireAuth>
+                      <User/>
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={PROFILE_URL}
+                  element={
+                    <RequireAuth>
+                      <Profile/>
+                    </RequireAuth>
+                  }
+                />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Box>
-          <SnackbarAlert open={open} handleClose={handleClose} message={message}/>
-        </>
       </div>
   );
 }
 
+
 export default App;
+

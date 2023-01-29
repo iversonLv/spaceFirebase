@@ -1,27 +1,37 @@
-import TagsInput from 'react-tagsinput'
-import 'react-tagsinput/react-tagsinput.css'
+import { useState, useEffect } from "react";
 
-// MUI components
-import Avatar from '@mui/material/Avatar'
+// component 
+import UserProfile from "../common/UserProfile/UserProfile";
 
-const Profile = ({me}) => {
+// context
+import useAuth from '../../firebase/auth'
+import { getUserSpacesById } from '../../firebase/firestore'
 
+const Profile = () => {
+  const { authUser } = useAuth()
 
-  return (
-    <div>
-      <Avatar alt={me.displayName} src={me.photoURL}/>
-      <div>
-        <label>Name:</label> {me.displayName}
-      </div>
-      <div>
-        <label>Country:</label> {me.country}
-      </div>
-      <div>
-        <label>Interests:</label>
-        <TagsInput value={me.interests} disabled inputProps={{placeholder: ""}} />
-      </div>
-    </div>
-  )
+  const [userJoinSpaces, setUserJoinSpaces] = useState([])
+  const [userCreateSpaces, setUserCreateSpaces] = useState([])
+  const [loadUserJoinSpaces, setLoadUserJoinSpaces] = useState(true)
+  const [loadUserCreateSpaces, setLoadUserCreateSpaces] = useState(true)
+  useEffect(() => {
+      const unscribe = async() => {
+        if (authUser.uid) {
+          await getUserSpacesById(authUser.uid, setUserJoinSpaces, 'join', setLoadUserJoinSpaces)
+          await getUserSpacesById(authUser.uid, setUserCreateSpaces, 'author', setLoadUserCreateSpaces)
+        }
+      }
+      return () => unscribe()
+  }, [authUser.uid]);
+
+  return <UserProfile
+            user={authUser}
+            userJoinSpaces={userJoinSpaces}
+            userCreateSpaces={userCreateSpaces}
+            loadUserJoinSpaces={loadUserJoinSpaces}
+            loadUserCreateSpaces={loadUserCreateSpaces}
+            title ='My profile'
+          />
 }
 
 export default Profile

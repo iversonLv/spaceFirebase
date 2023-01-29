@@ -1,0 +1,46 @@
+import { useState, useEffect } from 'react'
+
+// MUI components
+import AvatarGroup from '@mui/material/AvatarGroup'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+
+
+import { getSpaceActiveUsers } from '../../../firebase/firestore'
+import CommonAvatar from '../CommonAvatar/CommentAvatar'
+
+const UserAvatarGroup = ({spaceId}) => {
+  const [activeUsers, setActiveUsers] = useState([])
+
+  useEffect(() => {
+    getSpaceActiveUsers(spaceId, setActiveUsers)
+  }, [spaceId, setActiveUsers]);
+  
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        height: '44px',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap'
+      }}
+    >
+      <Typography variant="body2">
+          Total members: {activeUsers?.length}
+      </Typography>
+      <AvatarGroup
+        sx={{
+          flexWrap: 'wrap'
+        }}
+      >
+        {activeUsers && activeUsers.map(activeUser => (
+          <CommonAvatar user={activeUser} key={activeUser.uid}/>
+          ))}
+      </AvatarGroup>
+    </Box>
+  )
+}
+
+export default UserAvatarGroup

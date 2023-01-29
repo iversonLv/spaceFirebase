@@ -1,15 +1,14 @@
-.heading-container {
-  border: 1px solid var(--gray);
-  padding: 10px;
-  margin: 0 auto;
-  width: 500px;
-  border-radius: 20px;
+.react-tagsinput {
+  margin-top: 18px;
+  border-radius: 4px;
 }
-
-h1 {
-  text-align: center;
-}
-
 .react-tagsinput-input {
   width: auto !important;
+  height: 42px;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  line-height: 1.4375em !important;
+  letter-spacing: 0.00938em !important;
 }
+
