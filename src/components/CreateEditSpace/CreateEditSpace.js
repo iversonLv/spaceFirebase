@@ -19,6 +19,7 @@ import 'react-tagsinput/react-tagsinput.css'
 // components
 import TextForm from '../common/TextForm/TextForm'
 import DndUpload from '../common/DndUpload/DndUpload'
+import DividerWithTitle from "../common/DividerWithTitle/DividerWithTitle"
 
 // context
 import useAuth from '../../firebase/auth'
@@ -150,7 +151,11 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
           disabled={loading}
           value={spaceField.overview || ''}
         />
+      
+      <DividerWithTitle title='Keywords'/>
       <TagsInput disabled={loading} value={spaceField?.keywords} onChange={handlekeywordsChange} inputProps={{placeholder: "Add keywords", className: 'react-tagsinput-input'}} />
+      
+      <DividerWithTitle title='Prerequisites'/>
       <TagsInput  disabled={loading} value={spaceField?.prerequisites} onChange={handlePrerequisitesChange} inputProps={{placeholder: "Add prerequisites", className: 'react-tagsinput-input'}} />
         
       <Button
