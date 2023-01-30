@@ -10,7 +10,8 @@ const SpaceCardSkeleton = () => {
         display: 'flex',
         gap: '25px',
         flexWrap: 'wrap',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        marginTop: '15px'
       }}
     >
       <Stack spacing={1}>
