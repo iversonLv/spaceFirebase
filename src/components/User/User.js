@@ -6,7 +6,7 @@ import UserProfile from "../common/UserProfile/UserProfile";
 
 import { getUserSpacesById, getUserById } from '../../firebase/firestore'
 
-const User = ({setLoading}) => {
+const User = () => {
   const params = useParams();
   const [user, setUser] = useState({})
   
@@ -23,9 +23,10 @@ const User = ({setLoading}) => {
         await getUserSpacesById(params.uid, setUserCreateSpaces, 'author', setLoadUserCreateSpaces)
       }
     }
-    return () => unscribe()
+    unscribe()
 }, [params.uid]);
   return <UserProfile
+            isAuthUser={false}
             user={user}
             userJoinSpaces={userJoinSpaces}
             userCreateSpaces={userCreateSpaces}

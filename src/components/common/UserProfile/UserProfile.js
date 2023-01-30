@@ -18,7 +18,7 @@ import Button from '@mui/material/Button'
 import SpaceCardSkeleton from '../SpaceCardSkeleton/SpaceCardSkeleton'
 import DividerWithTitle from '../DividerWithTitle/DividerWithTitle'
 
-const UserProfile = ({user, userJoinSpaces, userCreateSpaces, title, loadUserJoinSpaces, loadUserCreateSpaces}) => {
+const UserProfile = ({isAuthUser, user, userJoinSpaces, userCreateSpaces, title, loadUserJoinSpaces, loadUserCreateSpaces}) => {
   const navigate = useNavigate()
   return (
     <Container>
@@ -102,7 +102,7 @@ const UserProfile = ({user, userJoinSpaces, userCreateSpaces, title, loadUserJoi
           ? 
           <>
             <DividerWithTitle title='Created Spaces'/>
-            <Button onClick={() => navigate(`${SPACES_URL}/create`)}>Go to Create Some Spaces?</Button>
+            {isAuthUser ? <Button onClick={() => navigate(`${SPACES_URL}/create`)}>Go to Create Some Spaces?</Button> : 'Current user hasn\'t created any space yet' }
           </>
 
           : <SpaceCardList spaces={userCreateSpaces} title="Created Spaces" />
@@ -113,7 +113,7 @@ const UserProfile = ({user, userJoinSpaces, userCreateSpaces, title, loadUserJoi
           ? 
           <>
             <DividerWithTitle title='Joined Spaces'/>
-            <Button onClick={() => navigate(HOME_URL)}>Go to Join Some Spaces?</Button>
+            {isAuthUser ? <Button onClick={() => navigate(HOME_URL)}>Go to Join Some Spaces?</Button> : 'Current user hasn\'t joined any space yet'}
           </>
           : <SpaceCardList spaces={userJoinSpaces} title="Joined Spaces" />
       }

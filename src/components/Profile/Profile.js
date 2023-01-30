@@ -21,10 +21,11 @@ const Profile = () => {
           await getUserSpacesById(authUser.uid, setUserCreateSpaces, 'author', setLoadUserCreateSpaces)
         }
       }
-      return () => unscribe()
+      unscribe()
   }, [authUser.uid]);
 
   return <UserProfile
+            isAuthUser={true}
             user={authUser}
             userJoinSpaces={userJoinSpaces}
             userCreateSpaces={userCreateSpaces}
