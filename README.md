@@ -139,8 +139,10 @@ All route URLs are set at `constants.js`
 [x] join will duplicated, update  
 [x] SpaceCard loading skeleton  
 [] modal for leave  
+[] modal for delete space  
 [x] snackbar for leave/join message  
 [x] edit space, thumbnail not fetch yet(V3), switch to create space, data not reset yet  
+    [] there is view btn to detail page? if edit, warning save dialog?
 [x] after create switch to profile page  
 [x] Updated firebase default array method rather than javascript push/filter  
 [x] Home page, leave/join not dynamic update, move the number into avatar group  
@@ -148,11 +150,14 @@ All route URLs are set at `constants.js`
 [] Delete post/comment: TODO, the related data should be removed  
 [90%] Edit post/comment, page can't scroll  
 [] Loading look buggy  
+    [] user profile, will load the !data.length then load data
 [x] click snackbar for leave/join will direct to detail page  
 [x] CommonAvatar for all tooltip+avatar except profile top avatar  
 [x] xxx ago with date-fns/formatDistanceToNow  
 [x] Add avatar at header  
+[] Responsive page?  
 [x] Use firebase UI for login (V3) and refactor existing Form
+[] Add profile edit function (V4)
 
 Home page and space detail page are for all users to view
 If non login, some button will change to disabled or show `SIGN UP to xxx`  
