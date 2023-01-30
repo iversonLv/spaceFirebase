@@ -71,7 +71,7 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
     if(pageTitle === EDIT_SPACE_PAGE_TITLE) {
       const unscribe = async() => {
         setLoading(true)
-        await getSpaceById(params.spaceId, setSpaceField, setPreviewPhoto)
+        await getEditSpaceById(params.spaceId, setSpaceField, setPreviewPhoto)
         setLoading(false)
       }
         
@@ -85,7 +85,8 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
         title: '',
         overview: '',
         keywords: [],
-        prerequisites: []
+        prerequisites: [],
+        bucket: ''
       })
       setPreviewPhoto('')
     }
@@ -131,7 +132,8 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
         sx={{
           marginTop: '20px'
         }}
-        variant="contained" onClick={() => handleAction(pageTitle)} disabled={loading}>
+        variant="contained" onClick={() => handleAction(pageTitle)} disabled={loading || disabledBtn}
+      >
           {pageTitle === CREATE_SPACE_PAGE_TITLE ? 'Create': 'Edit'}
         </Button>
     </Box>

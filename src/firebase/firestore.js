@@ -295,6 +295,25 @@ export const updateCommentPost = async (data, type, id) => {
   }
 }
 
+// get space by spaceId for edit space page only
+// Eidt space page only need the thumbnail, title, description, keywords, Prerequisites
+export const getEditSpaceById = async(spaceId, setPartialSpace, setPreviewPhoto) => {
+  const docRef = doc(db, SPACES_COLLECTION, spaceId);
+  await onSnapshot(docRef, async (snapshot) => {
+    const space = snapshot.data()
+    const {title, overview, keywords, prerequisites, bucket} = space
+    // edit page, we don't need all data, only some
+    setPartialSpace({
+      title,
+      overview,
+      keywords,
+      prerequisites,
+      bucket
+    })
+    // This is for edit space, other page does not need this, so default is a placeholder fun()
+    setPreviewPhoto(await checkBucketData(space.bucket))
+  })
+}
 
 // get space by spaceId
 /**
@@ -302,7 +321,7 @@ export const updateCommentPost = async (data, type, id) => {
  * @param  {fun} setSpace: bind useEffect setSpace state
  * @param  {fun} setPreviewPhoto: bind useEffect setPreviewPhoto state, this is specific for create/edit space page
  */
-export const getSpaceById = async(spaceId, setSpace, setPreviewPhoto=()=>{}) => {
+export const getSpaceById = async(spaceId, setSpace) => {
   const docRef = doc(db, SPACES_COLLECTION, spaceId);
   await onSnapshot(docRef, async (snapshot) => {
     const space = snapshot.data()
@@ -314,8 +333,6 @@ export const getSpaceById = async(spaceId, setSpace, setPreviewPhoto=()=>{}) => 
         photoURL: await checkBucketData(space?.author?.bucket)
       },
     })
-    // This is for edit space, other page does not need this, so default is a placeholder fun()
-    setPreviewPhoto(await checkBucketData(space.bucket))
   })
 }
 
@@ -498,10 +515,10 @@ export const addSpace = async(authUser, spaceField, thunbmail) =>{
 // Edit space by authUser
 export const updateSpace = async(spaceField, thunbmail, spaceId) => {
   const docSpaceRef = doc(db, SPACES_COLLECTION, spaceId)
-  const { title, overview, keywords, prerequisites } = spaceField
+  const { title, overview, keywords, prerequisites, bucket } = spaceField
   await updateDoc(docSpaceRef, {
     updatedOn: serverTimestamp(),
-    bucket: thunbmail ? await uploadImage(thunbmail, docSpaceRef.id) : '',
+    bucket: thunbmail ? await uploadImage(thunbmail, docSpaceRef.id) : bucket,
     title,
     overview,
     keywords,
