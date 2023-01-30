@@ -140,7 +140,7 @@ All route URLs are set at `constants.js`
 [x] SpaceCard loading skeleton  
 [] modal for leave  
 [x] snackbar for leave/join message  
-[90%] edit space, thumbnail not fetch yet, switch to create space, data not reset yet  
+[x] edit space, thumbnail not fetch yet(V3), switch to create space, data not reset yet  
 [x] after create switch to profile page  
 [x] Updated firebase default array method rather than javascript push/filter  
 [x] Home page, leave/join not dynamic update, move the number into avatar group  

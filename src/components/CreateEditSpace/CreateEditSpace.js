@@ -69,12 +69,13 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
 
   useEffect(() => {
     if(pageTitle === EDIT_SPACE_PAGE_TITLE) {
-      
+      const unscribe = async() => {
         setLoading(true)
-        getSpaceById(params.spaceId, setSpaceField)
+        await getSpaceById(params.spaceId, setSpaceField, setPreviewPhoto)
         setLoading(false)
+      }
         
-        
+      unscribe()
     }
   }, [pageTitle, params.spaceId, setLoading]);
 

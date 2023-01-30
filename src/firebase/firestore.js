@@ -297,7 +297,12 @@ export const updateCommentPost = async (data, type, id) => {
 
 
 // get space by spaceId
-export const getSpaceById = async(spaceId, setSpace) => {
+/**
+ * @param  {string} spaceId: params.spaceId
+ * @param  {fun} setSpace: bind useEffect setSpace state
+ * @param  {fun} setPreviewPhoto: bind useEffect setPreviewPhoto state, this is specific for create/edit space page
+ */
+export const getSpaceById = async(spaceId, setSpace, setPreviewPhoto=()=>{}) => {
   const docRef = doc(db, SPACES_COLLECTION, spaceId);
   await onSnapshot(docRef, async (snapshot) => {
     const space = snapshot.data()
@@ -309,6 +314,8 @@ export const getSpaceById = async(spaceId, setSpace) => {
         photoURL: await checkBucketData(space?.author?.bucket)
       },
     })
+    // This is for edit space, other page does not need this, so default is a placeholder fun()
+    setPreviewPhoto(await checkBucketData(space.bucket))
   })
 }
 
