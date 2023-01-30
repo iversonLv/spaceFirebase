@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+
 // MUI component
 import { Box } from "@mui/system"
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
+import { IconButton } from "@mui/material"
+
+// Mui icons
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
 
 // reactJs tagss
 import TagsInput from 'react-tagsinput'
@@ -93,15 +99,34 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
 
   }, [pageTitle]);
 
+  const handleBackArrow = () => {
+    // console.log(pathname)
+    navigate(-1)
+  }
+
   return (
     <>
-    <Typography
-          variant="h3"
-          gutterBottom
-          align='center'
-        >
-          {pageTitle}
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}
+    >
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <IconButton color="primary" aria-label="back" variant="outlined" onClick={handleBackArrow}>
+          <ArrowBackIosNewOutlinedIcon/>
+        </IconButton>
+        {pageTitle}
       </Typography>
+    </Box>
       <DndUpload setThunbmail={setThunbmail} previewPhoto={previewPhoto} setPreviewPhoto={setPreviewPhoto}/>
       <Box
           component="form"
