@@ -24,7 +24,7 @@ import DividerWithTitle from "../common/DividerWithTitle/DividerWithTitle"
 // context
 import useAuth from '../../firebase/auth'
 import useSpaces from '../../firebase/space'
-import { addSpace, updateSpace, getSpaceById} from '../../firebase/firestore'
+import { addSpace, updateSpace, getEditSpaceById} from '../../firebase/firestore'
 
 // helper
 import { checkObj } from '../../utils/helper'
