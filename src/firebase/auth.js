@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile} from 'firebase/auth'
 import { auth, db, USERS_COLLECTION } from './firebase-config'
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { uploadImage } from './storage'
 import { checkBucketData } from './firestore'
 
@@ -27,6 +27,7 @@ const useFirebaseAuth = () => {
       return
     }
     
+    // if user however
     const docRef = await doc(db, USERS_COLLECTION, user.uid)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
@@ -36,8 +37,16 @@ const useFirebaseAuth = () => {
         // })
       setAuthUser({...docSnap.data(), photoURL: await checkBucketData(docSnap.data()?.bucket)})
     } else {
+      // If we use firebaseUi register, we need check user, and set such user doc to
+      const userData = {
+        uid: user.uid,
+        displayName: user.displayName,
+        createdOn: serverTimestamp(),
+        bucket: ''
+      }
       // doc.data() will be undefined in this case
-      console.log("No such document!");
+      await setDoc(doc(db, USERS_COLLECTION, user.uid), userData);
+      setAuthUser({...userData})
     }
     setIsLoading(false)
 
@@ -68,11 +77,12 @@ const useFirebaseAuth = () => {
   }
 
   useEffect(() => {
-    // const unscribe = () => onAuthStateChanged(auth, authStateChanged)
+    const unscribe = onAuthStateChanged(auth, authStateChanged)
     // TODO: now after register with upload image, there is race condition that page load home page however not check the authUser
-    onAuthStateChanged(auth, authStateChanged)
+    // onAuthStateChanged(auth, authStateChanged)
     // setTimeout(() => {
     // }, 0);
+    return unscribe()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import SnackbarAlert from '../SnackbarAlert/SnackbarAlert'
 
 // constants
-import { REGISTER_URL, SPACES_URL } from '../../../constants'
+import { SIGN_IN_UP_URL, SPACES_URL } from '../../../constants'
 
 // context
 import useAuth from '../../../firebase/auth'
@@ -70,7 +70,7 @@ const JoinLeaveBtn = ({space}) => {
 
   if (!authUser) {
     // if non-login show sign up to join, otherwith show join or leave btn
-    return <Button variant="outlined" onClick={(e) => handleClickBtn(e, REGISTER_URL)}>Sign up to Join</Button>
+    return <Button variant="outlined" onClick={(e) => handleClickBtn(e, SIGN_IN_UP_URL)}>Sign up to Join</Button>
   }
   // if space author is authUser, then it should not be able to join or leave the space
   if (space?.author?.uid === authUser.uid) {

@@ -9,30 +9,31 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import { Paper } from '@mui/material'
 
+// Mui icons
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
+// react tags
 import TagsInput from 'react-tagsinput'
 import 'react-tagsinput/react-tagsinput.css'
-
-
-// icons
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 // component
 import  JoinLeaveBtn from '../common/JoinLeaveBtn/JoinLeaveBtn'
 import  UserAvatarGroup from '../common/UserAvatarGroup/UserAvatarGroup'
 import SpaceCardList from '../common/SpaceCardList/SpaceCardList'
+import SpaceCardSkeleton from '../common/SpaceCardSkeleton/SpaceCardSkeleton'
+import SpacePostsComments from '../common/SpacePostsComments/SpacePostsComments'
 import CommonAvatar from '../common/CommonAvatar/CommonAvatar'
+import DateTillToday from '../common/DateTillToday/DateTillToday'
 
 // context
 import useAuth from '../../firebase/auth'
 import { getSpaceById, getRelatedSpaces } from '../../firebase/firestore'
 
-import { Paper } from '@mui/material'
-import SpaceCardSkeleton from '../common/SpaceCardSkeleton/SpaceCardSkeleton'
-import SpacePostsComments from '../common/SpacePostsComments/SpacePostsComments'
-import CommonAvatar from '../common/CommonAvatar/CommentAvatar'
-import DateTillToday from '../common/DateTillToday/DateTillToday'
-import { LOGIN_URL } from '../../constants'
+
+// constants
+import { SIGN_IN_UP_URL } from '../../constants'
 
 const Space = ({setLoading}) => {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ const Space = ({setLoading}) => {
            authUser && <SpacePostsComments spaceId={space?.id} spaceAuthorUid={space?.author?.uid}/>
           }
           {
-            !authUser && <Button variant="outlined" onClick={() => navigate(LOGIN_URL)}>Login to view comment</Button>
+            !authUser && <Button variant="outlined" onClick={() => navigate(SIGN_IN_UP_URL)}>Login to view comment</Button>
           }
           {isLoading ? <SpaceCardSkeleton />
             : 

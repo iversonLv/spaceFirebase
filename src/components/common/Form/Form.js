@@ -1,6 +1,9 @@
 import { useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 
 import './Form.css'
+
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 // MUI component
 import { Box } from "@mui/system"
@@ -21,13 +24,20 @@ import 'react-tagsinput/react-tagsinput.css'
 import SelectCountry from '../SelectCountry/SelectCountry'
 import UploadAvatar from '../UploadAvatar/UploadAvatar'
 import TextForm from '../TextForm/TextForm'
+import SnackbarAlert from "../SnackbarAlert/SnackbarAlert";
 
 // helper
 import { checkObj } from '../../../utils/helper'
-import SnackbarAlert from "../SnackbarAlert/SnackbarAlert";
-import useAuth from "../../../firebase/auth";
+
+// constants
 import { HOME_URL } from "../../../constants";
-import { useNavigate } from "react-router-dom";
+
+// context
+import useAuth from "../../../firebase/auth";
+import { auth } from "../../../firebase/firebase-config";
+
+import { EmailAuthProvider } from 'firebase/auth';
+
 
 const Form = ({
   title,
@@ -40,7 +50,6 @@ const Form = ({
   const [showPassword, setShowPassword] = useState(false)
   const [disabledBtn, setDisabledBtn] = useState(true)
   const [message, setMessage] = useState('');
-
   
   // user login/register state
   const [emailPasswordField, setEmailPasswordField] = useState({email:'', password:''})
@@ -48,6 +57,17 @@ const Form = ({
   const [otherFields, setOtherFields] = useState({displayName:'', biography:''})
   const [country, setCountry] = useState({value: '', label: ''})
   const [photo, setPhoto] = useState(null)
+
+  // Configure FirebaseUI.
+const uiConfig = {
+  // Popup signin flow rather than redirect flow.
+  signInFlow: 'popup',
+  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+  signInSuccessUrl: HOME_URL,
+  signInOptions: [
+    EmailAuthProvider.PROVIDER_ID
+  ]
+};
 
   const handleAction = async (action) => {
     // Init show the loading bar
@@ -146,6 +166,7 @@ const Form = ({
       padding: '24px',
       margin: '0 auto'
     }}>
+      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
       <Typography
         variant='h3'
         gutterBottom

@@ -7,7 +7,6 @@ import Toolbar from '@mui/material/Toolbar'
 import LinearProgress from '@mui/material/LinearProgress'
 
 // components
-import Form from './components/common/Form/Form'
 import Header from './components/common/Header/Header'
 
 // Pages
@@ -21,8 +20,9 @@ import NotFound from './components/NotFound/NotFound'
 import useAuth from './firebase/auth'
 
 // constatns
-import { HOME_URL, LOGIN_URL, REGISTER_URL, USERS_URL, SPACES_URL, PROFILE_URL, CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE } from './constants'
+import { HOME_URL, SIGN_IN_UP_URL, USERS_URL, SPACES_URL, PROFILE_URL, CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE } from './constants'
 import CreateEditSpace from './components/CreateEditSpace/CreateEditSpace'
+import Signinup from './components/Signinup/Signinup'
 
 
 const RequireAuth = ({ children }) => {
@@ -30,7 +30,7 @@ const RequireAuth = ({ children }) => {
   const  location = useLocation();
 
   if (!authUser) {
-    return <Navigate to={LOGIN_URL} state={{ from: location }} replace />;
+    return <Navigate to={SIGN_IN_UP_URL} state={{ from: location }} replace />;
   }
 
   return children;
@@ -47,7 +47,7 @@ const App = () => {
   useEffect(() => {
     // if current login use and loading end
     // and current path is not login and register page, will direct to home page
-    if (authUser && !isLoading && (location.pathname === LOGIN_URL || location.pathname === REGISTER_URL)) {
+    if (authUser && !isLoading && (location.pathname === SIGN_IN_UP_URL)) {
       navigate(HOME_URL)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,24 +64,12 @@ const App = () => {
           <Box component="main" sx={{ p: 3 }}>
             <Toolbar /> 
             <Routes>
-              <Route
-                path={LOGIN_URL}
-                element={
-                  <Form
-                    title="Login"
-                    loading={loading}
-                    setLoading={setLoading}
-                  />
-                }/>
-              <Route
-                path={REGISTER_URL}
-                element={
-                  <Form
-                    title="Register"
-                    loading={loading}
-                    setLoading={setLoading}
-                  />
-                }/>
+                <Route
+                  path={SIGN_IN_UP_URL}
+                  element={
+                    <Signinup/>
+                  }
+                />
                 <Route
                   path={HOME_URL}
                   element={

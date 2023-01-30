@@ -1,7 +1,7 @@
 import {useNavigate } from 'react-router-dom'
 
 // constants
-import  { LOGIN_URL, REGISTER_URL, HOME_URL, PROFILE_URL, APP_HEADING, SPACES_URL } from '../../../constants'
+import  { SIGN_IN_UP_URL, HOME_URL, PROFILE_URL, APP_HEADING, SPACES_URL } from '../../../constants'
 
 // MUI component
 import { Box } from "@mui/system"
@@ -23,14 +23,11 @@ import CommonAvatar from '../CommonAvatar/CommonAvatar'
 
 
 const loginedNavItem = [
-  {'label': 'Home', 'route': HOME_URL}, 
   {'label': 'Profile', 'route': PROFILE_URL}, 
-  {'label': 'Create Learning Space', 'route': `${SPACES_URL}/create`}, 
+  {'label': 'Create Space', 'route': `${SPACES_URL}/create`}, 
 ];
-const nonLoginedNavItem = [
-  {'label': 'Home', 'route': HOME_URL}, 
-  {'label': 'Login', 'route': LOGIN_URL}, 
-  {'label': 'Register', 'route': REGISTER_URL}, 
+const nonLoginedNavItem = [ 
+  {'label': 'Sign in or up', 'route': SIGN_IN_UP_URL}
 ];
 
 const Header = () => {
@@ -38,7 +35,7 @@ const Header = () => {
   const navigate = useNavigate()
   const handleLogout = () => {
     logout()
-    navigate(LOGIN_URL)
+    navigate(SIGN_IN_UP_URL)
   }
   
   return (
@@ -52,17 +49,20 @@ const Header = () => {
           >
             {APP_HEADING}
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ display: 'flex' }}>
+            <NavBtn route={HOME_URL} label='Home'/>
             {!!authUser && !isLoading && (<>
             {loginedNavItem.map(item => (
               <NavBtn {...item} key={item.route}/>
             ))}
-            <Tooltip title='Logout' placement="bottom">
-              <IconButton  sx={{ color: '#fff' }} onClick={handleLogout}>
-                <LogoutIcon/>
-              </IconButton >
-            </Tooltip>
-            </>)}
+              <CommonAvatar user={authUser} tooltipPlacement="bottom" me={true}/>
+              <Tooltip title='Logout' placement="bottom">
+                <IconButton  sx={{ color: '#fff' }} onClick={handleLogout}>
+                  <LogoutIcon/>
+                </IconButton >
+              </Tooltip>
+            </>
+            )}
             {/* If not logined, show login and register button */}
             {!authUser && !isLoading && 
               nonLoginedNavItem.map(item => (

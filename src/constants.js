@@ -12,10 +12,9 @@ export const TYPE_POST = 'post'
 export const TYPE_COMMENT = 'comment'
 
 // URL
-export const LOGIN_URL = '/login'
-export const REGISTER_URL = '/register'
 export const HOME_URL = '/'
 export const PROFILE_URL = '/profile'
 export const USERS_URL = '/users'
 export const SPACES_URL = '/spaces'
+export const SIGN_IN_UP_URL = '/signinup'
 

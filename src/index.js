@@ -9,7 +9,8 @@ import { SpacesProvider } from './firebase/space'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // firebase-ui-react need comment the strictMode
+  // <React.StrictMode>
     <SpacesProvider>
       <AuthUserProvider>
         <Router>
@@ -17,7 +18,7 @@ root.render(
         </Router>
       </AuthUserProvider>
     </SpacesProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
