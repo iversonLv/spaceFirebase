@@ -18,7 +18,7 @@ import { SPACES_URL, HOME_URL } from "../../../constants"
 
 // context
 import useSpaces from '../../../firebase/space'
-import CommonAvatar from "../CommonAvatar/CommentAvatar"
+import CommonAvatar from "../CommonAvatar/CommonAvatar"
 import DateTillToday from "../DateTillToday/DateTillToday"
 
 const SpaceCard = ({space}) => {

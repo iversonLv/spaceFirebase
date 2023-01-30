@@ -19,6 +19,7 @@ import useAuth from '../../../firebase/auth'
 
 // component
 import NavBtn from '../NavBtn/NavBtn'
+import CommonAvatar from '../CommonAvatar/CommonAvatar'
 
 
 const loginedNavItem = [

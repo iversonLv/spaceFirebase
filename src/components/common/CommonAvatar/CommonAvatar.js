@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Tooltip } from "@mui/material"
 
 // Constants
-import { USERS_URL } from "../../../constants";
+import { PROFILE_URL, USERS_URL } from "../../../constants";
 
-const CommonAvatar = ({user}) => {
+const CommonAvatar = ({user, tooltipPlacement='top', me=false}) => {
   const navigate = useNavigate()
 
   const handleClickAvatar = (e, uid) => {
     e.stopPropagation();
-    navigate(`${USERS_URL}/${uid}`)
+    me ? navigate(PROFILE_URL) : navigate(`${USERS_URL}/${uid}`)
   }
 
   return (
-    <Tooltip title={user?.displayName} placement="top">
+    <Tooltip title={user?.displayName} placement={tooltipPlacement}>
       <Avatar
         alt={user?.displayName}
         src={user?.photoURL}

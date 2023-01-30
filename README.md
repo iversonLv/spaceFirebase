@@ -151,6 +151,7 @@ All route URLs are set at `constants.js`
 [x] click snackbar for leave/join will direct to detail page  
 [x] CommonAvatar for all tooltip+avatar except profile top avatar  
 [x] xxx ago with date-fns/formatDistanceToNow  
+[x] Add avatar at header  
 
 Home page and space detail page are for all users to view
 If non login, some button will change to disabled or show `SIGN UP to xxx`  

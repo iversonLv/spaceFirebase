@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 
 
 import { getSpaceActiveUsers } from '../../../firebase/firestore'
-import CommonAvatar from '../CommonAvatar/CommentAvatar'
+import CommonAvatar from '../CommonAvatar/CommonAvatar'
 
 const UserAvatarGroup = ({spaceId}) => {
   const [activeUsers, setActiveUsers] = useState([])

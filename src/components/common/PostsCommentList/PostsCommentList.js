@@ -22,7 +22,7 @@ import PostCommentAction from '../PostCommentAction/PostCommentAction';
 import useAuth from '../../../firebase/auth';
 import { updateCommentPost } from '../../../firebase/firestore';
 import TextForm from '../TextForm/TextForm';
-import CommonAvatar from '../CommonAvatar/CommentAvatar';
+import CommonAvatar from '../CommonAvatar/CommonAvatar';
 import DateTillToday from '../DateTillToday/DateTillToday';
 
 const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {

@@ -21,6 +21,7 @@ import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutl
 import  JoinLeaveBtn from '../common/JoinLeaveBtn/JoinLeaveBtn'
 import  UserAvatarGroup from '../common/UserAvatarGroup/UserAvatarGroup'
 import SpaceCardList from '../common/SpaceCardList/SpaceCardList'
+import CommonAvatar from '../common/CommonAvatar/CommonAvatar'
 
 // context
 import useAuth from '../../firebase/auth'

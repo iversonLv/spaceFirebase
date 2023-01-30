@@ -21,7 +21,7 @@ import { TYPE_COMMENT } from "../../../constants";
 import LikeDislike from "../LikeDislike/LikeDislike";
 import PostsCommentsSkeleton from "../PostsCommentsSkeleton/PostsCommentsSkeleton";
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
-import CommonAvatar from "../CommonAvatar/CommentAvatar";
+import CommonAvatar from "../CommonAvatar/CommonAvatar";
 
 const PostsComments = ({id, spaceAuthorUid, type}) => {
   const param = useParams()
