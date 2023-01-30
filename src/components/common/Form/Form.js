@@ -1,8 +1,6 @@
 import { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
-import './Form.css'
-
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 // MUI component
