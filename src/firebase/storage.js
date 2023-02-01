@@ -1,4 +1,4 @@
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 import { storage, BUCKET_URL } from './firebase-config'
 
 import { format } from 'date-fns'
@@ -17,4 +17,24 @@ export const uploadImage = async(image, id) => {
 
 export const getDownloadStorageURL = async (bucket) => {
   return await getDownloadURL(ref(storage, bucket))
+}
+
+export const delStorageImage = async (id) => {
+  console.log(id)
+  const listRef = ref(storage, `${BUCKET_URL}/${id}`);
+  // Find all the prefixes and items.
+  listAll(listRef)
+  .then((res) => {
+    res.prefixes.forEach((folderRef) => {
+      // All the prefixes under listRef.
+      // You may call listAll() recursively on them.
+      console.log(folderRef)
+    });
+    res.items.forEach((itemRef) => {
+      // All the items under listRef.
+      deleteObject(itemRef)
+    });
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+  });
 }
