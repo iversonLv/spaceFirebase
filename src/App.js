@@ -103,7 +103,7 @@ const App = () => {
                 <Route
                   path={`${SPACES_URL}/:spaceId`}
                   element={
-                    <Space setLoading={setLoading}/>
+                    <Space/>
                   }
                 />
                 <Route
