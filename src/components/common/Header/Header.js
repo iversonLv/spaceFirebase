@@ -27,7 +27,7 @@ const loginedNavItem = [
   {'label': 'Create Space', 'route': `${SPACES_URL}/create`}, 
 ];
 const nonLoginedNavItem = [ 
-  {'label': 'Sign in or up', 'route': SIGN_IN_UP_URL}
+  {'label': 'Sign in/up', 'route': SIGN_IN_UP_URL}
 ];
 
 const Header = () => {
