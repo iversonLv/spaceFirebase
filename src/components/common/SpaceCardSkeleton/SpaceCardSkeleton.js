@@ -1,35 +1,38 @@
 // Mui components
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import Skeleton from '@mui/material/Skeleton'
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import Skeleton from '@mui/material/Skeleton';
+
 
 const SpaceCardSkeleton = () => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: '25px',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-start',
-        marginTop: '15px'
-      }}
-    >
-      <Stack spacing={1}>
-        <Box
-          sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: '15px'
-          }}
-        >
-          <Skeleton variant="circular" width={40} height={40} />
-          <Skeleton variant="rounded" width={312} height={60} />
-        </Box>
-        <Skeleton variant="rectangular" width={367} height={140} />
-        <Skeleton variant="rounded" width={367} height={140} />
-      </Stack>
-    </Box>
+    <Card sx={{ maxWidth: 345, m: 2 }}>
+      <CardHeader
+        avatar={
+          <Skeleton animation="wave" variant="circular" width={40} height={40} />
+        }
+        action={null}
+        title={
+          <Skeleton
+            animation="wave"
+            height={10}
+            width="80%"
+            style={{ marginBottom: 6 }}
+          />
+        }
+        subheader={
+          <Skeleton animation="wave" height={10} width="40%" />
+        }
+      />
+      <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
+      <CardContent>
+          <>
+            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
+            <Skeleton animation="wave" height={10} width="80%" />
+          </>
+      </CardContent>
+    </Card>
   )
 }
 
