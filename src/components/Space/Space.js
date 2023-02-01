@@ -31,11 +31,13 @@ import DateTillToday from '../common/DateTillToday/DateTillToday'
 import useAuth from '../../firebase/auth'
 import { getSpaceById, getRelatedSpaces } from '../../firebase/firestore'
 
-
 // constants
 import { SIGN_IN_UP_URL } from '../../constants'
 
-const Space = ({setLoading}) => {
+// component
+import SpaceSkeleton from '../common/SpaceSkeleton/SpaceSkeleton'
+
+const Space = () => {
   const navigate = useNavigate();
 
   const params = useParams();
@@ -46,15 +48,14 @@ const Space = ({setLoading}) => {
   const [isLoading, setIsLoading] = useState(true)
   // load more will load more 3
   const [loadNumber, setLoadNumber] = useState(3)
+  const [getSpaceByIdLoading, setGetSpaceByIdLoading] = useState(true)
   // get space
   useEffect(() => {
-    const fetchSpaceById = async() => {
-    setLoading(true)
-    await getSpaceById(params.spaceId, setSpace)
-    setLoading(false)
+    const unscribe = async()=> {
+      await getSpaceById(params.spaceId, setSpace, setGetSpaceByIdLoading)
     }
-    fetchSpaceById()
-  }, [params, authUser, setLoading]);
+    unscribe()
+  }, [params, authUser, setGetSpaceByIdLoading]);
 
   useEffect(() => {
       getRelatedSpaces(space?.keywords, space?.id, setRelatedSpaces, setIsLoading)
@@ -73,7 +74,8 @@ const Space = ({setLoading}) => {
 
   return (
     <Container>
-      {space && (
+      {getSpaceByIdLoading && <SpaceSkeleton />}
+      {!!Object.keys(space).length && !getSpaceByIdLoading && (
         <>
           <Box
             sx={{
@@ -193,6 +195,11 @@ const Space = ({setLoading}) => {
           }
         </>
       )}
+      {!Object.keys(space).length && !getSpaceByIdLoading && <Typography
+        variant='h3'
+      >
+        Ops, seems the spaces is not available.
+      </Typography>}
     </Container>
   )
 }

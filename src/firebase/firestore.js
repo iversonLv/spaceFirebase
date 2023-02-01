@@ -321,19 +321,24 @@ export const getEditSpaceById = async(spaceId, setPartialSpace, setPreviewPhoto)
  * @param  {fun} setSpace: bind useEffect setSpace state
  * @param  {fun} setPreviewPhoto: bind useEffect setPreviewPhoto state, this is specific for create/edit space page
  */
-export const getSpaceById = async(spaceId, setSpace) => {
+export const getSpaceById = async(spaceId, setSpace, setLoading) => {
+  setLoading(true)
   const docRef = doc(db, SPACES_COLLECTION, spaceId);
-  await onSnapshot(docRef, async (snapshot) => {
+  const unscribe = onSnapshot(docRef, async (snapshot) => {
     const space = snapshot.data()
-    setSpace({
-      ...space,
-      thumbnail: await checkBucketData(space.bucket),
-      author: {
-        ...space.author,
-        photoURL: await checkBucketData(space?.author?.bucket)
-      },
-    })
+    if (space) {
+      await setSpace({
+        ...space,
+        thumbnail: await checkBucketData(space.bucket),
+        author: {
+          ...space.author,
+          photoURL: await checkBucketData(space?.author?.bucket)
+        },
+      })
+    }
+    setLoading(false)
   })
+  return unscribe
 }
 
 // get spaces by filtering queryString
