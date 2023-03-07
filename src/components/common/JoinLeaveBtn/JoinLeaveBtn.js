@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // MUI component
 import Button from '@mui/material/Button'
@@ -11,7 +11,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
 // constants
-import { SIGN_IN_UP_URL, SPACES_URL } from '../../../constants'
+import { HOME_URL, SIGN_IN_UP_URL, SPACES_URL } from '../../../constants'
 
 // context
 import useAuth from '../../../firebase/auth'
@@ -25,6 +25,7 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
   const { authUser } = useAuth()
   const { fetchSpaces } = useSpaces()
   const navigate = useNavigate()
+  const location = useLocation()
   
   // snack bar state 
   const [open, setOpen] = useState(false);
@@ -47,7 +48,13 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
       await userLeaveSpace(authUser, space.id)
     } else {
       await deleteSpace(authUser.uid, space)
-      await fetchSpaces()
+      // if at space detail page, should navigate to other page
+      if (location.pathname.indexOf('spaces') >= 0) {
+        navigate(HOME_URL)
+      } else {
+        // if at profile page or home page
+        await fetchSpaces()
+      }
     }
     setLoading(false)
     setOpenDialog(false)

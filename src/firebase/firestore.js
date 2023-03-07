@@ -468,13 +468,16 @@ export const getSpaceActiveUsers = async (spaceId, setActiveUsers) => {
   await onSnapshot(docRef, async snapshot => {
     if (snapshot.exists) {
       let allActiveUsers = []
-      for (const activeUser of snapshot.data()?.activeUsers) {
-        allActiveUsers.push({
-          ...activeUser,
-          photoURL: await checkBucketData(activeUser.bucket)
-        })
+      if (snapshot.data()?.activeUsers.length > 0) {
+
+          for (const activeUser of snapshot.data()?.activeUsers) {
+            allActiveUsers.push({
+              ...activeUser,
+              photoURL: await checkBucketData(activeUser.bucket)
+            })
+          }
+          setActiveUsers(allActiveUsers)
       }
-      setActiveUsers(allActiveUsers)
     }
   })
 }
@@ -553,13 +556,20 @@ export const deleteSpace = async(uid, space) => {
     // remove the space, need to remove the space thumbnail
     await delStorageImage(space?.id)
 
-    // TODO: not perfect
-    if (space.postsId.length > 0) {
+    // remove the space need to remove its posts
+    if (space?.postsId?.length > 0) {
       space.postsId.forEach(async postId => {
         const docPostRef = doc(db, POSTS_COLLECTION, postId)
         await deleteDoc(docPostRef)
       })
     }
-    // remove the space need to remove its posts
+
+    // remove the space need to revmoe its commments
+    const q = query(collection(db, COMMENTS_COLLECTION), where('spaceId', "==", space.id))
+    const querySnapshot = await getDocs(q);
+    for(const snapshot of querySnapshot.docs) {
+      const d = doc(db, COMMENTS_COLLECTION, snapshot.id )
+      await deleteDoc(d)
+    }
   }
 }
