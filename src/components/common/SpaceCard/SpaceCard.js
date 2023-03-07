@@ -20,6 +20,7 @@ import { SPACES_URL, HOME_URL } from "../../../constants"
 import useSpaces from '../../../firebase/space'
 import CommonAvatar from "../CommonAvatar/CommonAvatar"
 import DateTillToday from "../DateTillToday/DateTillToday"
+import { Tooltip } from "@mui/material"
 
 const SpaceCard = ({space}) => {
   const { fetchSpaces } = useSpaces()
@@ -40,11 +41,14 @@ const SpaceCard = ({space}) => {
   return (
     <Card
       sx={{
-        width: 367,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         cursor: 'pointer',
+        height: '100%',
+        "&:hover": {
+          backgroundColor: 'rgba(0, 0, 0, .02)'
+        },
       }} 
       onClick={(e) => handleClickBtn(e, `${SPACES_URL}/${space?.id}`)}
     >
@@ -55,6 +59,14 @@ const SpaceCard = ({space}) => {
           subheader={space?.createdOn &&
             <DateTillToday date={space?.createdOn}/>
           }
+          sx={{
+            '.MuiCardHeader-title': {
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: '1',
+              overflow: 'hidden'
+            }
+          }}
         />
         <CardMedia
           component="img"
@@ -63,9 +75,19 @@ const SpaceCard = ({space}) => {
           image={space?.thumbnail}
         />
         <CardContent>
-          <Typography variant="body2">
-            {space?.overview}
-          </Typography>
+          <Tooltip title={space?.overview}>
+            <Typography
+              variant="body2"
+              sx={{
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: '3',
+                overflow: 'hidden',
+              }}
+            >
+              {space?.overview}
+            </Typography>
+          </Tooltip>
           <br/>
           
           <UserAvatarGroup spaceId={space.id}/>
@@ -82,7 +104,7 @@ const SpaceCard = ({space}) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '15px',
+            mb: '15px',
           }}
         >
           {space && <JoinLeaveBtn space={space} listOrDetail='list'/>}
@@ -92,7 +114,7 @@ const SpaceCard = ({space}) => {
         <Box
           sx={{
             gap: '5px',
-            marginLeft: 0,
+            ml: 0,
             display: 'flex',
             justifyContent: 'flex-end',
             flexWrap: 'wrap'

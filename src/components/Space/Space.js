@@ -6,10 +6,9 @@ import './Space.css'
 // MUI component
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import { Paper } from '@mui/material'
+import { Chip, Grid, Paper } from '@mui/material'
 
 // Mui icons
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
@@ -22,7 +21,6 @@ import 'react-tagsinput/react-tagsinput.css'
 import  JoinLeaveBtn from '../common/JoinLeaveBtn/JoinLeaveBtn'
 import  UserAvatarGroup from '../common/UserAvatarGroup/UserAvatarGroup'
 import SpaceCardList from '../common/SpaceCardList/SpaceCardList'
-import SpaceCardSkeleton from '../common/SpaceCardSkeleton/SpaceCardSkeleton'
 import SpacePostsComments from '../common/SpacePostsComments/SpacePostsComments'
 import CommonAvatar from '../common/CommonAvatar/CommonAvatar'
 import DateTillToday from '../common/DateTillToday/DateTillToday'
@@ -32,22 +30,25 @@ import useAuth from '../../firebase/auth'
 import { getSpaceById, getRelatedSpaces } from '../../firebase/firestore'
 
 // constants
-import { SIGN_IN_UP_URL } from '../../constants'
+import { HOME_URL, LOAD_MORE_NUMBER, NO_RELATED_SPACE, NO_SUCH_SPACE, SIGN_IN_UP_URL } from '../../constants'
 
 // component
 import SpaceSkeleton from '../common/SpaceSkeleton/SpaceSkeleton'
+import useSpaces from '../../firebase/space'
+import DividerWithTitle from '../common/DividerWithTitle/DividerWithTitle'
 
 const Space = () => {
   const navigate = useNavigate();
 
   const params = useParams();
   const { authUser } = useAuth()
+  const { fetchSpaces } = useSpaces()
   const [space, setSpace] = useState({})
 
   const [relatedSpaces, setRelatedSpaces] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   // load more will load more 3
-  const [loadNumber, setLoadNumber] = useState(3)
+  const [loadNumber, setLoadNumber] = useState(LOAD_MORE_NUMBER)
   const [getSpaceByIdLoading, setGetSpaceByIdLoading] = useState(true)
   // get space
   useEffect(() => {
@@ -72,8 +73,14 @@ const Space = () => {
     navigate(-1)
   }
 
+  const filterKeywordsForSpace = (e, keyword) => {
+    e.stopPropagation();
+    navigate(`${HOME_URL}?keywords=${keyword}`)
+    fetchSpaces('keywords', 'array-contains', keyword)
+  }
+
   return (
-    <Container>
+    <>
       {getSpaceByIdLoading && <SpaceSkeleton />}
       {!!Object.keys(space).length && !getSpaceByIdLoading && (
         <>
@@ -97,7 +104,14 @@ const Space = () => {
               </IconButton>
               {space?.title}
             </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '15px'
+              }}
+            >
               {space && <JoinLeaveBtn space={space}/>}
+            </Box>
           </Box>
           <Paper elevation={0}
             sx={{
@@ -116,11 +130,28 @@ const Space = () => {
               By
               <CommonAvatar user={space?.author} />
               <DateTillToday date={space?.createdOn} />
+
+              <Box
+                sx={{
+                  gap: '5px',
+                  ml: '15px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  flexWrap: 'wrap'
+                }}
+              >
+
+              {space.keywords.map((keyword, index) => (
+                <Chip key={index} variant="outlined" size="small" label={keyword}
+                onClick={(e) => filterKeywordsForSpace(e, keyword)}
+                />
+              ))}
+              </Box>
             </Box>
             <Paper
               elevation = {0}
               sx={{
-                marginBottom: '0.35em',
+                mb: '0.35em',
               }}
             >
               
@@ -128,79 +159,76 @@ const Space = () => {
             </Paper>
           </Paper>
           <img src={space?.thumbnail} alt={space?.title} className='thumbnail' />
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '50px',
-            }}
-          >
-            <Box
-              sx={{
-                flex: '2'
-              }}
-            >
+          <Grid container spacing={4}>
+            <Grid item xs={12} sm={12} lg={8}>
               <Typography
-                  variant="body1"
-                  gutterBottom
-                  sx={{
-                    '&::first-letter': {
-                      fontSize: '3em',
-                      lineHeight: '1em'
-                    }
-                  }}
-                >
-                  {space.overview}
-              </Typography>
-            </Box>
-            <Box 
-              sx={{
-                flex: '1',
-                padding: '10px'
-              }}
-            >
-              <Typography
-                variant="h6"
+                variant="body1"
                 gutterBottom
-                align='center'
+                sx={{
+                  '&::first-letter': {
+                    fontSize: '3em',
+                    lineHeight: '1em'
+                  }
+                }}
               >
-                Prerequisites
+                {space.overview}
               </Typography>
-              {space?.prerequisites && <TagsInput value={space?.prerequisites} disabled inputProps={{placeholder: ""}} />}
-              
-            </Box>
-          </Box>
+            </Grid>
+            <Grid item xs={12} sm={12} lg={4}>
+              <Box 
+                sx={{
+                  flex: '1',
+                  p: '10px'
+                }}
+              >
+                <DividerWithTitle title='Prerequisites'/>
+                {space?.prerequisites && <TagsInput value={space?.prerequisites} disabled inputProps={{placeholder: ""}} />}
+                
+              </Box>
+            </Grid>
+          </Grid>
 
           {/* posts */}
           {
            authUser && <SpacePostsComments spaceId={space?.id} spaceAuthorUid={space?.author?.uid}/>
           }
           {
-            !authUser && <Button variant="outlined" onClick={() => navigate(SIGN_IN_UP_URL)}>Login to view comment</Button>
+            !authUser && <Button variant="outlined" size='small' onClick={() => navigate(SIGN_IN_UP_URL)}>Login to view post</Button>
           }
-          {isLoading ? <SpaceCardSkeleton />
-            : 
-            <>
-              <SpaceCardList spaces={relatedSpaces.slice(0, loadNumber)} title="Related Spaces" />
+          <>
+            <SpaceCardList
+              isLoading={isLoading}
+              spaces={relatedSpaces.slice(0, loadNumber)}
+              title="Related Spaces"
+              noMessage={NO_RELATED_SPACE}
+              />
+            {!isLoading && relatedSpaces.length > loadNumber  && 
               <Box
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  margin: '10px 0'
+                  m: '10px 0'
                 }}
               >
-                {relatedSpaces.length > loadNumber  && <Button onClick={loadingMoreRelatedSpaced}>Load More</Button>}
+                <Button onClick={loadingMoreRelatedSpaced}>Load More</Button>
               </Box>
-            </>
-          }
+            }
+          </>
         </>
       )}
-      {!Object.keys(space).length && !getSpaceByIdLoading && <Typography
-        variant='h3'
+      {!Object.keys(space).length && !getSpaceByIdLoading &&
+      <Typography
+        variant="h4"
+        gutterBottom
+        align='center'
+        sx={{
+          textTransform: 'uppercase'
+        }}
       >
-        Ops, seems the spaces is not available.
+        {NO_SUCH_SPACE}
       </Typography>}
-    </Container>
+    </>
   )
 }
 

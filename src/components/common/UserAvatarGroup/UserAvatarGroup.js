@@ -27,7 +27,12 @@ const UserAvatarGroup = ({spaceId}) => {
         flexWrap: 'wrap'
       }}
     >
-      <Typography variant="body2">
+      <Typography
+        variant="caption"
+        sx={{
+          color: 'text.secondary'
+        }}
+      >
           Total members: {activeUsers?.length}
       </Typography>
       <AvatarGroup

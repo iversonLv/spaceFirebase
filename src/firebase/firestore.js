@@ -1,4 +1,4 @@
-import { db, USERS_COLLECTION, SPACES_COLLECTION, POSTS_COLLECTION, COMMENTS_COLLECTION } from './firebase-config'
+import { db, USERS_COLLECTION, SPACES_COLLECTION, POSTS_COLLECTION, COMMENTS_COLLECTION, auth } from './firebase-config'
 import {
   doc,
   getDoc,
@@ -16,9 +16,10 @@ import {
   arrayRemove,
   increment,
   getCountFromServer,
-  writeBatch
+  writeBatch,
+  deleteDoc
 } from "firebase/firestore";
-import { getDownloadStorageURL, uploadImage } from './storage'
+import { delStorageImage, getDownloadStorageURL, uploadImage } from './storage'
 import { DisLike_T, Like_T, TYPE_COMMENT, TYPE_POST } from '../constants';
 
 export const checkBucketData = async (bucketData) => {
@@ -29,7 +30,8 @@ export const checkBucketData = async (bucketData) => {
  * @param  {Obj} post: input post data
  * @param  {Obj} spaceId: the post is belong to the space
  */
-export const addPost = async (authUser, post, spaceId ) => {
+export const addPost = async (authUser, post, spaceId, setLoading ) => {
+  setLoading(true)
   const docSpaceRef = await doc(db, SPACES_COLLECTION, spaceId)
   const colPost = collection(db, POSTS_COLLECTION)
   const docAuthUserRef = doc(db, USERS_COLLECTION, authUser.uid)
@@ -55,6 +57,7 @@ export const addPost = async (authUser, post, spaceId ) => {
   await updateDoc(docAuthUserRef, {
     postsId: arrayUnion(postDoc.id)
   })
+  setLoading(false)
 }
 
 
@@ -110,7 +113,8 @@ export const deletePostComment = async (type, id, uid, spaceId, parentId, postId
   }
 }
 
-export const getPosts = async (spaceId, setPosts) => {
+export const getPosts = async (spaceId, setPosts, setLoading) => {
+  setLoading(true)
   if (spaceId) {
     const q = query(collection(db, POSTS_COLLECTION), where('spaceId', "==", spaceId), orderBy('createdOn', 'desc'));
     // automatically update after the doc update
@@ -128,7 +132,7 @@ export const getPosts = async (spaceId, setPosts) => {
         })
       }
       setPosts(allPosts)
-  
+      setLoading(false)
     })
     return unscribe
   }
@@ -247,8 +251,10 @@ export const getComments = async (type, id, setComments) => {
  * @param  {String} content: comment content
  * @param  {String} type: 'post' | 'comment'
  * @param  {String} spaceId: the comment or post belong to the space
+ * @param  {fun} setLoading: loading
  */
-export const addComment = async (authUser, id, content, type, spaceId) => {
+export const addComment = async (authUser, id, content, type, spaceId, setLoading) => {
+  setLoading(true)
   const docRef = type === TYPE_POST ? doc(db, POSTS_COLLECTION, id) : doc(db, COMMENTS_COLLECTION, id)
   const colComment = collection(db, COMMENTS_COLLECTION)
   const docAuthUserRef = doc(db, USERS_COLLECTION, authUser.uid)
@@ -274,6 +280,7 @@ export const addComment = async (authUser, id, content, type, spaceId) => {
   await updateDoc(docAuthUserRef, {
     commentsId: arrayUnion(commentDoc.id)
   })
+  setLoading(false)
 }
 
 export const updateCommentPost = async (data, type, id) => {
@@ -297,10 +304,12 @@ export const updateCommentPost = async (data, type, id) => {
 
 // get space by spaceId for edit space page only
 // Eidt space page only need the thumbnail, title, description, keywords, Prerequisites
-export const getEditSpaceById = async(spaceId, setPartialSpace, setPreviewPhoto) => {
+export const getEditSpaceById = async(spaceId, setPartialSpace, setPreviewPhoto, setLoading) => {
+  setLoading(true)
   const docRef = doc(db, SPACES_COLLECTION, spaceId);
-  await onSnapshot(docRef, async (snapshot) => {
-    const space = snapshot.data()
+  const snapshot =  await getDoc(docRef)
+  const space = snapshot.data()
+  if (space) {
     const {title, overview, keywords, prerequisites, bucket} = space
     // edit page, we don't need all data, only some
     setPartialSpace({
@@ -312,7 +321,8 @@ export const getEditSpaceById = async(spaceId, setPartialSpace, setPreviewPhoto)
     })
     // This is for edit space, other page does not need this, so default is a placeholder fun()
     setPreviewPhoto(await checkBucketData(space.bucket))
-  })
+    setLoading(false)
+  }
 }
 
 // get space by spaceId
@@ -380,8 +390,8 @@ export const getUserSpacesById = async(uid, setUserSpaces, authorOrJoin, setLoad
       })
     }
     setUserSpaces(allSpacesForUser)
+    setLoading(false)
   })
-  setLoading(false)
   return unscribe
 }
 
@@ -399,15 +409,15 @@ export const getUserById = async(uid, setUser) => {
 }
 
 // user join space
-export const userJoinSpace = async(authUser, space) => {
-  if (space) {
-    if (
-    space?.activeUsersId?.indexOf(authUser?.uid)  > -1 ) {
-      return
-    }
+export const userJoinSpace = async(authUser, spaceId) => {
+  if (spaceId) {
+    // if (
+    // space?.activeUsersId?.indexOf(authUser?.uid)  > -1 ) {
+    //   return
+    // }
 
     const {uid, bucket, displayName } = authUser
-    const docSpaceRef = doc(db, SPACES_COLLECTION, space.id)
+    const docSpaceRef = doc(db, SPACES_COLLECTION, spaceId)
     const docAuthUserRef = doc(db, USERS_COLLECTION, uid)
     await updateDoc(docSpaceRef, {
       activeUsers: arrayUnion({uid, bucket, displayName}),
@@ -415,14 +425,14 @@ export const userJoinSpace = async(authUser, space) => {
       numOfMembers: increment(1)
     });
     await updateDoc(docAuthUserRef,  {
-      spacesId: arrayUnion(space.id)
+      spacesId: arrayUnion(spaceId)
     })
   }
 }
 
 // user leave space
-export const userLeaveSpace = async(authUser, space) => {
-  const docSpaceRef = doc(db, SPACES_COLLECTION, space.id);
+export const userLeaveSpace = async(authUser, spaceId) => {
+  const docSpaceRef = doc(db, SPACES_COLLECTION, spaceId);
   const docAuthUserRef = doc(db, USERS_COLLECTION, authUser.uid)
   const {uid, bucket, displayName} = authUser
   await updateDoc(docSpaceRef, {
@@ -433,7 +443,7 @@ export const userLeaveSpace = async(authUser, space) => {
   
   // if leave, current user spaces should filter the spaceid
   await updateDoc(docAuthUserRef,  {
-    spaces: arrayRemove(space.id)
+    spaces: arrayRemove(spaceId)
   })
 }
 
@@ -476,30 +486,27 @@ export const getRelatedSpaces = async (keywords, spaceId, setRelatedSpaces, setI
     const q = query(collection(db, SPACES_COLLECTION), where('keywords', "array-contains-any", keywords));
     const querySnapshot = await getDocs(q);
     let allRelatedSpaces = []
-    
-
-
-      for (const docSnapshot of querySnapshot.docs) {
-        const space = docSnapshot.data()
-        if (docSnapshot.id !== spaceId) {
-          await allRelatedSpaces.push({
-            ...space,
-            thumbnail: await checkBucketData(space?.bucket),
-            author: {
-              ...space.author,
-              photoURL: await checkBucketData(space?.author?.bucket)
-            },
-            id: docSnapshot.id
-          })
-        }
+    for (const docSnapshot of querySnapshot.docs) {
+      const space = docSnapshot.data()
+      if (docSnapshot.id !== spaceId) {
+        await allRelatedSpaces.push({
+          ...space,
+          thumbnail: await checkBucketData(space?.bucket),
+          author: {
+            ...space.author,
+            photoURL: await checkBucketData(space?.author?.bucket)
+          },
+          id: docSnapshot.id
+        })
       }
-      setRelatedSpaces(allRelatedSpaces)
+    }
+    setRelatedSpaces(allRelatedSpaces)
+    setIsLoading(false)
   }
-  setIsLoading(false)
 }
 
 // create space by authUser
-export const addSpace = async(authUser, spaceField, thunbmail) =>{
+export const addSpace = async(authUser, spaceField, thumbnail) =>{
   const { uid, bucket, displayName } = authUser
   const docSpaceRef = doc(collection(db, SPACES_COLLECTION))
   await setDoc(docSpaceRef, {
@@ -509,7 +516,7 @@ export const addSpace = async(authUser, spaceField, thunbmail) =>{
     createdOn: serverTimestamp(),
     updatedOn: serverTimestamp(),
     id: docSpaceRef.id,
-    bucket: thunbmail ? await uploadImage(thunbmail, docSpaceRef.id) : '',
+    bucket: thumbnail ? await uploadImage(thumbnail, docSpaceRef.id) : '',
     postsId: [],
     activeUsers: [],
     activeUsersId: [],
@@ -518,16 +525,41 @@ export const addSpace = async(authUser, spaceField, thunbmail) =>{
 }
 
 // Edit space by authUser
-export const updateSpace = async(spaceField, thunbmail, spaceId) => {
+export const updateSpace = async(spaceField, thumbnail, spaceId) => {
   const docSpaceRef = doc(db, SPACES_COLLECTION, spaceId)
   const { title, overview, keywords, prerequisites, bucket } = spaceField
   await updateDoc(docSpaceRef, {
     updatedOn: serverTimestamp(),
-    bucket: thunbmail ? await uploadImage(thunbmail, docSpaceRef.id) : bucket,
+    bucket: thumbnail ? await uploadImage(thumbnail, docSpaceRef.id) : bucket,
     title,
     overview,
     keywords,
     prerequisites
   })
-  
+}
+
+// Delete space by authUser
+export const deleteSpace = async(uid, space) => {
+  if (auth.currentUser) {
+    const docSpaceRef = doc(db, SPACES_COLLECTION, space.id)
+    await deleteDoc(docSpaceRef)
+
+    // if leave, current user spaces should filter the spaceid
+    const docAuthUserRef = doc(db, USERS_COLLECTION, uid)
+    await updateDoc(docAuthUserRef,  {
+      spaces: arrayRemove(space.id)
+    })
+
+    // remove the space, need to remove the space thumbnail
+    await delStorageImage(space?.id)
+
+    // TODO: not perfect
+    if (space.postsId.length > 0) {
+      space.postsId.forEach(async postId => {
+        const docPostRef = doc(db, POSTS_COLLECTION, postId)
+        await deleteDoc(docPostRef)
+      })
+    }
+    // remove the space need to remove its posts
+  }
 }

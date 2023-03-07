@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 // Mui components
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
@@ -12,6 +13,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 // Mui icons
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined'
 
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
@@ -21,9 +23,11 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import { deletePostComment } from '../../../firebase/firestore'
 import { CircularProgress } from '@mui/material'
+import { TYPE_POST } from '../../../constants'
 
-const PostCommentAction = ({type, id, uid, spaceId, parentId, postId, setEditMode}) => {
+const PostCommentAction = ({type, id, uid, authUserId, exportPdfLoading, spaceId, parentId, postId, setEditMode, handleExportPDF}) => {
    const [anchorEl, setAnchorEl] = useState(null)
+   
   const open = Boolean(anchorEl)
   const [openDialog, setOpenDialog] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -56,7 +60,7 @@ const PostCommentAction = ({type, id, uid, spaceId, parentId, postId, setEditMod
   return (
     <>
       <Box
-        sx={{marginLeft: 'auto'}}
+        sx={{ml: 'auto'}}
       >
         <IconButton
           aria-label="menu"
@@ -77,18 +81,30 @@ const PostCommentAction = ({type, id, uid, spaceId, parentId, postId, setEditMod
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleEdit}>
-            <ListItemIcon>
-              <ModeEditOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText>Edit</ListItemText>
-          </MenuItem>
-          <MenuItem onClick={handleDelete}>
-            <ListItemIcon>
-              <DeleteOutlineOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText>Delete</ListItemText>
-          </MenuItem>
+          {uid === authUserId &&
+            <MenuItem onClick={handleEdit}>
+              <ListItemIcon>
+                <ModeEditOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText>Edit</ListItemText>
+            </MenuItem>
+          }
+          {uid === authUserId &&
+            <MenuItem onClick={handleDelete}>
+              <ListItemIcon>
+                <DeleteOutlineOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
+          }
+          {type === TYPE_POST && 
+            <MenuItem onClick={handleExportPDF} disabled={exportPdfLoading}>
+              <ListItemIcon>
+                <IosShareOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText>To PDF</ListItemText>
+            </MenuItem>
+          }
         </Menu>
       </Box>
       <Dialog

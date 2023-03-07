@@ -11,6 +11,7 @@ import MDEditor from '@uiw/react-md-editor';
 import {
   Box,
   Button,
+  Typography,
 } from "@mui/material"
 
 // Components
@@ -21,7 +22,7 @@ import TextForm from "../TextForm/TextForm"
 // constants
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
 import PostsCommentsSkeleton from "../PostsCommentsSkeleton/PostsCommentsSkeleton";
-import { TYPE_POST } from "../../../constants";
+import { NO_POST, TYPE_POST } from "../../../constants";
 
 const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
 
@@ -32,25 +33,20 @@ const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
   const [post, setPost] = useState({title: '', content: ''})
   const [posts, setPosts] = useState([])
   const [disabledCreatePost, setDisabledCreatePost] = useState(false)
-  
+  const [addPostLoading, setAddPostLoading] = useState(false)
 
-
-  
   // get posts
   useEffect(() => {
     const fetchPosts = async() => {
-      setLoading(true)
-      await getPosts(spaceId, setPosts)
-      setLoading(false)
+      await getPosts(spaceId, setPosts, setLoading)
     }
     fetchPosts()
-  }, [spaceId, setLoading]);
-
+  }, [spaceId])
 
   const handleCreatePost = async() => {
     // Click the create the post, the create btn should be disabled
     setDisabledCreatePost(true)
-    await addPost(authUser, post, spaceId)
+    await addPost(authUser, post, spaceId, setAddPostLoading)
     // after add the post, the create post form fields should reset
     setPost({title: '', content: ''})
     // after add the post, the create btn should be enable again
@@ -58,7 +54,11 @@ const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        mb: '30px'
+      }}
+    >
       <DividerWithTitle title='Posts'/>
       <Box
         component="form"
@@ -78,7 +78,6 @@ const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
           <TextForm
             name='postTitle'
             value={post?.title || ''}
-            size="small"
             required={true}
             disabled={disabledCreatePost}
             handleChange={(e) => setPost({...post, title: e.target.value})}
@@ -89,12 +88,12 @@ const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
           />
           
           <Button
-            sx={{width: '170px'}}
             variant="outlined"
             disabled={disabledCreatePost || (!post?.title || !post?.content)}
             onClick={handleCreatePost}
+            size='small'
           >
-            Create a Post
+            Post
           </Button>
         </Box>
         <MDEditor
@@ -104,7 +103,7 @@ const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
       </Box>
       
       {loading && <PostsCommentsSkeleton />}
-      { disabledCreatePost && <PostsCommentsSkeleton /> }
+      {disabledCreatePost && addPostLoading && <PostsCommentsSkeleton />}
       {(posts && !loading) && posts.map(post => (
         <PostsCommentList
           data={post}
@@ -114,7 +113,16 @@ const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {
           spaceAuthorUid={spaceAuthorUid}
         />
       ))}
-    </>
+      {posts.length === 0 && !loading  && !addPostLoading &&
+        <Typography
+            variant="body2"
+            gutterBottom
+            align='center'
+          >
+            {NO_POST}
+      </Typography>
+      }
+    </Box>
   )
 }
 

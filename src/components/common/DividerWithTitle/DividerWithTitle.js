@@ -6,11 +6,14 @@ const DividerWithTitle = ({title}) => {
   return (
     <Divider
       sx={{
-        margin: '10px 0'
+        m: '10px 0'
       }}
     >
       <Typography
         variant="h6"
+        sx={{
+          fontWeight: 'light'
+        }}
       >
         {title}
       </Typography>

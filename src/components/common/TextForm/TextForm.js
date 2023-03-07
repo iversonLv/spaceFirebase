@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField'
  * 
  * More detail: https://mui.com/material-ui/react-text-field/
  */
-const TextForm = ({name, type='text', isFullWidth = true, handleChange, props, required = false, value, size='medium', sx={}, margin='normal', disabled=false }) => {
+const TextForm = ({name, variant='outlined', type='text', isFullWidth = true, handleChange, props, required = false, value, size='small', sx={}, margin='normal', disabled=false }) => {
   return <TextField
 
       autoComplete='on'
@@ -26,7 +26,7 @@ const TextForm = ({name, type='text', isFullWidth = true, handleChange, props, r
       name={name}
       label={`Enter the ${name}`}
       type={type}
-      variant='outlined'
+      variant={variant}
       onChange={handleChange}
       InputProps={props}
       size={size}

@@ -161,13 +161,17 @@ const uiConfig = {
   return (
     <Paper sx={{
       width: '500px',
-      padding: '24px',
-      margin: '0 auto'
+      p: '24px',
+      m: '0 auto'
     }}>
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
       <Typography
-        variant='h3'
+        variant="h4"
         gutterBottom
+        align='center'
+        sx={{
+          textTransform: 'uppercase'
+        }}
       >
         {title}
       </Typography>

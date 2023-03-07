@@ -4,18 +4,26 @@ import { useNavigate } from 'react-router-dom'
 // MUI component
 import Button from '@mui/material/Button'
 import SnackbarAlert from '../SnackbarAlert/SnackbarAlert'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 
 // constants
 import { SIGN_IN_UP_URL, SPACES_URL } from '../../../constants'
 
 // context
 import useAuth from '../../../firebase/auth'
-import { userJoinSpace, userLeaveSpace, getUserSpaceJoinLeaveState } from "../../../firebase/firestore";
+import { userJoinSpace, userLeaveSpace, getUserSpaceJoinLeaveState, deleteSpace } from "../../../firebase/firestore";
+import { CircularProgress, Typography } from '@mui/material'
+import useSpaces from '../../../firebase/space'
 
 
-const JoinLeaveBtn = ({space}) => {
+const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
   const [loading, setLoading] = useState(false)
   const { authUser } = useAuth()
+  const { fetchSpaces } = useSpaces()
   const navigate = useNavigate()
   
   // snack bar state 
@@ -23,6 +31,29 @@ const JoinLeaveBtn = ({space}) => {
   const [message, setMessage] = useState('');
   
   const [joined, setJoined] = useState(false)
+
+  // dialog
+  const [openDialog, setOpenDialog] = useState(false)
+  const [actionType, setActionType] = useState('')
+  const handleCloseDialog = (e) => {
+    e.stopPropagation();
+    setOpenDialog(false)
+  }
+  const handleAction = async(e, actionType) => {
+    e.stopPropagation();
+    setOpen(false);
+    setLoading(true)
+    if (actionType === 'Leave') {
+      await userLeaveSpace(authUser, space.id)
+    } else {
+      await deleteSpace(authUser.uid, space)
+      await fetchSpaces()
+    }
+    setLoading(false)
+    setOpenDialog(false)
+    setOpen(true);
+    setMessage(`${actionType} the space succeed!`);
+  }
 
   useEffect(() => {
     getUserSpaceJoinLeaveState(space.id, authUser, setJoined)
@@ -33,21 +64,16 @@ const JoinLeaveBtn = ({space}) => {
     e.stopPropagation();
     setOpen(false);
     setLoading(true)
-    await userJoinSpace(authUser, space)
+    await userJoinSpace(authUser, space.id)
     setLoading(false)
     setOpen(true);
     setMessage('Congrates, you have joined the space.')
   }
 
-  const handleLeave = async(e) => {
-    // Stop progagation during click the btn on Card
+  const handleOpenDialog = (e, actionType) => {
     e.stopPropagation();
-    setOpen(false);
-    setLoading(true)
-    await userLeaveSpace(authUser, space)
-    setLoading(false)
-    setOpen(true);
-    setMessage('Leave the space succeed!');
+    setActionType(actionType)
+    setOpenDialog(true)
   }
   
 
@@ -67,25 +93,98 @@ const JoinLeaveBtn = ({space}) => {
     setOpen(false);
   };
 
-
-  if (!authUser) {
-    // if non-login show sign up to join, otherwith show join or leave btn
-    return <Button variant="outlined" onClick={(e) => handleClickBtn(e, SIGN_IN_UP_URL)}>Sign up to Join</Button>
-  }
-  // if space author is authUser, then it should not be able to join or leave the space
-  if (space?.author?.uid === authUser.uid) {
-    return <Button variant="outlined" color="secondary" onClick={(e) => handleClickBtn(e, `${SPACES_URL}/${space.id}/edit`)}>Edit</Button>
+  const BTNS = () => {
+    if (!authUser) {
+      // if non-login show sign up to join, otherwith show join or leave btn
+      return <Button variant="outlined" size='small'  color="secondary" onClick={(e) => handleClickBtn(e, SIGN_IN_UP_URL)}>Sign in/up to Join</Button>
+    }
+    // if space author is authUser, then it should not be able to join or leave the space
+    if (space?.author?.uid === authUser.uid) {
+      return (
+        <>
+          {!isEditPage && <Button variant="outlined" size='small' color="secondary" onClick={(e) => handleClickBtn(e, `${SPACES_URL}/${space.id}/edit`)}>Edit</Button>}
+          <Button variant="outlined" color="warning"  size='small' disabled={loadingDisabled} onClick={(e) => handleOpenDialog(e, 'Delete')}>Delete</Button>
+        </>
+      )
+    }
+    return (
+      // If join will show leave btn otherwise show join btn
+      <>
+      {joined
+      ? <Button variant="outlined" color="warning" size='small'  disabled={loading} onClick={(e) => handleOpenDialog(e, 'Leave')}>Leave</Button>
+      : <Button variant="outlined" size='small' disabled={loading} onClick={(e) => handleJoin(e)}>Join</Button>
+      }
+        <SnackbarAlert open={open} handleClose={handleClose} message={message}/>
+      </>
+    ) 
   }
   return (
-    // If join will show leave btn otherwise show join btn
     <>
-    {joined
-    ? <Button variant="outlined" color="error" disabled={loading} onClick={(e) => handleLeave(e)}>Leave</Button>
-    : <Button variant="outlined" disabled={loading} onClick={(e) => handleJoin(e)}>Join</Button>
-    }
-      <SnackbarAlert open={open} handleClose={handleClose} message={message}/>
+      <BTNS />
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{
+            fontWeight: 'light'
+          }}
+        >
+        Warning
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{
+              color: 'text-primary'
+            }}  
+          >
+            {actionType} the space: 
+            <Typography
+              variant='body2'
+              component='span'
+              gutterBottom
+              sx={{
+                fontWeight: 'bold',
+                fontStyle: 'italic',
+              }}
+            >
+              {space?.title}
+            </Typography> ?
+            <br/>
+            {actionType === 'Leave' && <Typography
+              variant='caption'
+            >
+              You could join the space again.
+            </Typography>
+            }
+            {actionType === 'Delete' && <Typography
+              variant='caption'
+            >
+              It won't be restored. 
+            </Typography>
+            }
+          </DialogContentText>
+        </DialogContent>
+        {loading &&
+          <DialogActions
+            sx={{justifyContent: 'center'}}
+          >
+            <CircularProgress color="inherit" />
+          </DialogActions>
+        }
+        {!loading && <DialogActions>
+          <Button size='small' onClick={(e) => handleCloseDialog(e)}>Cancel</Button>
+          <Button size='small' onClick={(e) => handleAction(e, actionType)}>
+            Yes
+          </Button>
+        </DialogActions>}
+      </Dialog>
     </>
-  ) 
+  )
 }
 
 export default JoinLeaveBtn

@@ -4,12 +4,16 @@ import { useState, useEffect } from "react"
 import {
   Box,
   Button,
-  IconButton
+  Divider,
+  Drawer,
+  IconButton,
+  Typography
  } from "@mui/material";
 
 //  Mui icons
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 import { getComments, addComment } from "../../../firebase/firestore";
 
@@ -22,6 +26,7 @@ import LikeDislike from "../LikeDislike/LikeDislike";
 import PostsCommentsSkeleton from "../PostsCommentsSkeleton/PostsCommentsSkeleton";
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
 import CommonAvatar from "../CommonAvatar/CommonAvatar";
+import DividerWithTitle from "../DividerWithTitle/DividerWithTitle";
 
 const PostsComments = ({id, spaceAuthorUid, type}) => {
   const param = useParams()
@@ -35,6 +40,7 @@ const PostsComments = ({id, spaceAuthorUid, type}) => {
   
   const [selectedId, setSelectedId] = useState('')
   
+  const [getCommentsLoading, setGetCommentsLoading] = useState(false)
   
   const [comment, setComment] = useState('')
   const handleReplay = (id) => {
@@ -54,14 +60,12 @@ const PostsComments = ({id, spaceAuthorUid, type}) => {
       await getComments(type, id, setComments)
     }
 
-    return () => {
-      fetchComments()
-    }
+    fetchComments()
   }, [id, type]);
 
   const handleAddComment = async(id) => {
     setDisabledCreate(true)
-    await addComment(authUser, id, comment, type, param.spaceId)
+    await addComment(authUser, id, comment, type, param.spaceId, setGetCommentsLoading)
     // await getComments(type, id, setComments)
     setComment('')
     setSelectedId('')
@@ -79,6 +83,22 @@ const PostsComments = ({id, spaceAuthorUid, type}) => {
     await getComments(type, id, setComments)
     setLoading(false)
     setShowComment(true)
+  }
+
+  // For accessibility
+  const toggleDrawer = (id) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+    setSelectedId(id)
+  };
+  const handleCloseDrawer = () => {
+    toggleDrawer(false)
+    setSelectedId('')
+    setComment('')
   }
   return (
     <>
@@ -102,28 +122,91 @@ const PostsComments = ({id, spaceAuthorUid, type}) => {
         }
     </Box>
       {selectedId === id && (
-      <Box
-        sx={{
-          display: 'flex',
-          margin: '15px 0',
-          gap: '15px',
-          alignItems: 'flex-start',
+      <>
+        <Drawer
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            height: '100%',
+            '.MuiDrawer-paper': {
+              height: '100%',
+          }
         }}
+        anchor={'top'}
+        open={selectedId === id}
+        onClose={handleCloseDrawer}
       >
-        <CommonAvatar user={authUser}/>
-        <MDEditor
-          style={{width: '500px'}}
-          value={comment}    
-          onChange={(value) => setComment(value)}
-          height={100}
-          hideToolbar={true}
-        />
-        <Button variant="outlined" size="small" disabled={disabledCreate || !comment} onClick={() => handleAddComment(id)}>Comment</Button>
-        <Button variant="outlined" size="small" onClick={handleCancel}>Cancel</Button>
-      </Box>)}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              p: '8px 16px'
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1}}
+            >
+              Post Comment
+            </Typography>
+            <IconButton onClick={toggleDrawer(false)}>
+              <CloseOutlinedIcon/>
+            </IconButton>
+          </Box>
+          <MDEditor
+            visibleDragbar={false}
+            value={comment}    
+            onChange={(value) => setComment(value)}
+            preview="edit"
+            hideToolbar={true}
+            height='50%'
+          />
+          <DividerWithTitle title='Preview' />
+          <MDEditor.Markdown source={comment} style={{ whiteSpace: 'pre-wrap', padding: '0 15px 15px', height: '30%' }} />
+          <Box
+            sx={{
+              mt: 'auto'
+            }}
+          >
+            <Divider/>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '15px',
+                p: '15px',
+                justifyContent: 'flex-end'
+              }}
+            >
+              <Button variant="outlined" disabled={disabledCreate || !comment} onClick={ () => handleAddComment(id)}>Comment</Button>
+              <Button variant='text' onClick={handleCancel}>Cancel</Button>
+            </Box>
+          </Box>
+        </Drawer>
+
+        <Box
+          sx={{
+            display: 'flex',
+            m: '15px 0',
+            gap: '15px',
+            alignItems: 'flex-start',
+          }}
+        >
+          <CommonAvatar user={authUser} sx={{width: '30px', height: '30px'}}/>
+          <MDEditor
+            style={{width: '500px'}}
+            value={comment}    
+            onChange={(value) => setComment(value)}
+            height={100}
+            hideToolbar={true}
+          />
+          <Button variant="outlined" size="small" disabled={disabledCreate || !comment} onClick={() => handleAddComment(id)}>Comment</Button>
+          <Button variant="outlined" size="small" onClick={handleCancel}>Cancel</Button>
+        </Box>
+      </>
+      )}
       
       {loading && <PostsCommentsSkeleton />}
-      { disabledCreate && <PostsCommentsSkeleton /> }
+      { disabledCreate && getCommentsLoading && <PostsCommentsSkeleton /> }
       {(comments && showComment && !loading) && comments.map(comment => (
         <PostsCommentList
           data={comment}

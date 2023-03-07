@@ -1,8 +1,18 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile} from 'firebase/auth'
+import {
+  onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendPasswordResetEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  updatePassword
+} from 'firebase/auth'
 import { auth, db, USERS_COLLECTION } from './firebase-config'
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { uploadImage } from './storage'
 import { checkBucketData } from './firestore'
 
@@ -75,6 +85,82 @@ const useFirebaseAuth = () => {
       });
       setIsLoading(false)
   }
+  
+  const updateUserInfo = async(data, thumbnail, uid, setLoading) => {
+    setLoading(true)
+    const userRef = doc(db, USERS_COLLECTION, uid)
+    await updateDoc(userRef, {
+      ...data,
+      bucket: thumbnail ? await uploadImage(thumbnail, uid) : '',
+    })
+
+    // after update, will refetch the user
+    const docSnap = await getDoc(userRef)
+    if (docSnap.exists()) {
+      // const bucket = docSnap.data()?.bucket
+      // getDownloadStorageURL(bucket).then(photoURL => {
+        //   setAuthUser({...docSnap.data(), photoURL})
+        // })
+      await setAuthUser({...docSnap.data(), photoURL: await checkBucketData(docSnap.data()?.bucket)})
+      setLoading(false)
+    }
+  }
+
+  // send email to reset password
+  const forgotPassword = async (setLoading, setMessage) => {
+    setLoading(true)
+    try {
+      await sendPasswordResetEmail(auth, auth.currentUser.email)
+      setLoading(false)
+      setMessage('The reset password link has been sent to your registered email, kindly check the inbox')
+    } catch(error) {
+      setLoading(false)
+      if(error) setMessage(error.message)
+    }
+  }
+
+  // reset password in app
+  // first need to re-authenticate with existing password
+  const reAuthWithPassword= async(currentPassword, setLoading, setMessage, setInvalid) => {
+    setLoading(true)
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      currentPassword
+    )
+    try {
+      console.log(1)
+      // TODO: there is a bug for this Promise, can't not catch the error
+      const result  =  await reauthenticateWithCredential(auth.currentUser, credential)
+      console.log(result)
+      setMessage('')
+      setLoading(false)
+      setInvalid(false)
+      console.log(3)
+    } catch(error) {
+      setLoading(false)
+      
+      setMessage(error.message)
+      setInvalid(true)
+        
+      console.log(4)
+    }
+  }
+  // This function is relied on reAuthWithPassword()
+  // Because when we update user password, we need to re auth the current user first
+  const updateUserPassword = async(newPassword, setLoading, setMessage, setInvalid) => {
+    setLoading(true)
+    try {
+      await updatePassword(auth.currentUser, newPassword)
+      setMessage('Your password has been updated!')
+      setLoading(false)
+      setInvalid(false)
+    } catch(error) {
+      setLoading(false)
+      setMessage(error.message)
+      setInvalid(true)
+    }
+  }
+
 
   useEffect(() => {
     const unscribe = onAuthStateChanged(auth, authStateChanged)
@@ -92,7 +178,11 @@ const useFirebaseAuth = () => {
     logout,
     signIn,
     setIsLoading,
-    register
+    register,
+    updateUserInfo,
+    forgotPassword,
+    reAuthWithPassword,
+    updateUserPassword
   }
 }
 

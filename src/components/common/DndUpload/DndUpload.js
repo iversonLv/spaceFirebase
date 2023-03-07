@@ -1,7 +1,10 @@
+import { Box, Typography } from "@mui/material";
 import { useState, useRef } from "react";
 
+import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
+
 import './DndUpload.css'
-const DndUpload = ({setThunbmail, previewPhoto, setPreviewPhoto}) => {
+const DndUpload = ({setThumbnail, previewPhoto, setPreviewPhoto, disabled, shape='retangle'}) => {
 
   // drag state
   const [dragActive, setDragActive] = useState(false);
@@ -9,7 +12,7 @@ const DndUpload = ({setThunbmail, previewPhoto, setPreviewPhoto}) => {
   // ref
   const inputRef = useRef(null);
   const handleFiles = (files) =>  {
-    setThunbmail(files[0])
+    setThumbnail(files[0])
     setPreviewPhoto(URL.createObjectURL(files[0]));
   }
   // handle drag events
@@ -42,7 +45,8 @@ const DndUpload = ({setThunbmail, previewPhoto, setPreviewPhoto}) => {
   };
   
   return (
-    <form
+    <Box
+        className={shape === 'circular' ? 'curcular-shape' : ''}
         id="form-file-upload"
         onDragEnter={handleDrag}
         onSubmit={(e) => e.preventDefault()}
@@ -54,6 +58,7 @@ const DndUpload = ({setThunbmail, previewPhoto, setPreviewPhoto}) => {
           accept="image/png, image/jpeg"
           multiple={true}
           onChange={handleChange}
+          disabled={disabled}
         />
         <label
           style={{
@@ -61,22 +66,34 @@ const DndUpload = ({setThunbmail, previewPhoto, setPreviewPhoto}) => {
           }}
           id="label-file-upload"
           htmlFor="input-file-upload"
-          className={dragActive ? "drag-active" : ""}
+          className={disabled ? "disabled-upload" : ""}
         >
-          <div className="text-area">
-            <p>Drag and drop your file here or click to upload a file</p>
-          </div>
+          <Box
+            component='div'
+            className="text-area">
+            {shape === 'circular'
+            ? <PhotoCameraOutlinedIcon /> 
+            : <Typography
+                variant="body2"
+                gutterBottom
+                align='center'
+              >
+                Drag and drop your file here or click to upload a file
+              </Typography>
+            }
+          </Box>
         </label>
-        {dragActive && (
-          <div
+        {dragActive && !disabled && (
+          <Box
+            component='div'
             id="drag-file-element"
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
-          ></div>
+          />
         )}
-      </form>
+      </Box>
   )
 }
 

@@ -138,8 +138,8 @@ All route URLs are set at `constants.js`
 [x] create space by login use  
 [x] join will duplicated, update  
 [x] SpaceCard loading skeleton  
-[] modal for leave  
-[] modal for delete space  
+[x] modal for leave  
+[x] modal for delete space  
 [x] snackbar for leave/join message  
 [x] edit space, thumbnail not fetch yet(V3), switch to create space, data not reset yet  
     [] there is view btn to detail page? if edit, warning save dialog?
@@ -150,14 +150,44 @@ All route URLs are set at `constants.js`
 [] Delete post/comment: TODO, the related data should be removed  
 [90%] Edit post/comment, page can't scroll  
 [] Loading look buggy  
-    [] user profile, will load the !data.length then load data
+    [x] user profile, will load the !data.length then load data
+    [] Join/Leave snackbar load first before data change
 [x] click snackbar for leave/join will direct to detail page  
 [x] CommonAvatar for all tooltip+avatar except profile top avatar  
 [x] xxx ago with date-fns/formatDistanceToNow  
 [x] Add avatar at header  
-[] Responsive page?  
+[] Responsive page?
+  [x] Space List (V4)
+  [x] Create/edit space (V4)
+  [x] user profile (V4)
+  [x] header (V4)
+  [] post area
+  [] xs, short card with horizantonal scroll?
+[] light/dark mode?
+[] typescript or prop type?
 [x] Use firebase UI for login (V3) and refactor existing Form
-[] Add profile edit function (V4)
+[X] Add profile edit function (V4)
+[x] profile edit page, if no any change, update btn will be disabed still
+[] Leave edit profile page, show unsaved warning
+[] Leave edit space page, show unsaved warning
+[] space edit page, if no any change, update btn will be disabed still
+[99%] reset password (V4)
+  [99%] inner profile page, required email and existing password
+     There is bug for reauthenticateWithCredential() try catch error
+  [x] inner profile page, forgot password and reset from email rest password link
+[] form validation
+[x] update the MUI sx style base on the API
+[] import/export spaces?
+[] share spaces?
+[] fav spaces?
+[] new created spaces show a icon
+[x] Export post to PDF
+
+xs: < 599
+sm: 600 - 899
+md: 900 - 1199
+lg:  1200 - 1535
+xl: 1536
 
 Home page and space detail page are for all users to view
 If non login, some button will change to disabled or show `SIGN UP to xxx`  

@@ -28,7 +28,6 @@ export const delStorageImage = async (id) => {
     res.prefixes.forEach((folderRef) => {
       // All the prefixes under listRef.
       // You may call listAll() recursively on them.
-      console.log(folderRef)
     });
     res.items.forEach((itemRef) => {
       // All the items under listRef.
@@ -36,5 +35,6 @@ export const delStorageImage = async (id) => {
     });
   }).catch((error) => {
     // Uh-oh, an error occurred!
+    console.log(error)
   });
 }

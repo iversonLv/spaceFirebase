@@ -15,7 +15,9 @@ const SelectCountry = ({setCountry, country}) => {
   }
   return (
     <Autocomplete
+      disableClearable
       disablePortal
+      size='small'
       id="country"
       name="country"
       options={options}
@@ -40,7 +42,6 @@ const SelectCountry = ({setCountry, country}) => {
       )}
       renderInput={(params) => (
         <TextField {...params}
-          required
           label="Select your country" 
           fullWidth
           margin="normal"

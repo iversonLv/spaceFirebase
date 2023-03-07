@@ -23,6 +23,8 @@ import useAuth from './firebase/auth'
 import { HOME_URL, SIGN_IN_UP_URL, USERS_URL, SPACES_URL, PROFILE_URL, CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE } from './constants'
 import CreateEditSpace from './components/CreateEditSpace/CreateEditSpace'
 import Signinup from './components/Signinup/Signinup'
+import { Container } from '@mui/material'
+import ProfileEdit from './components/ProfileEdit/ProfileEdit'
 
 
 const RequireAuth = ({ children }) => {
@@ -59,71 +61,84 @@ const App = () => {
         <LinearProgress color="secondary"/>
       :
       <div>
-          {loading && <LinearProgress color="secondary" sx={{zIndex: 1101}}/>}
+          {loading && <LinearProgress color="secondary" sx={{zIndex: 1101, position: 'fixed', width: '100%'}}/>}
           <Header />
           <Box component="main" sx={{ p: 3 }}>
-            <Toolbar /> 
-            <Routes>
-                <Route
-                  path={SIGN_IN_UP_URL}
-                  element={
-                    <Signinup/>
-                  }
-                />
-                <Route
-                  path={HOME_URL}
-                  element={
-                    <Home/>
-                  }
-                />
-                <Route
-                  path={`${SPACES_URL}/create`}
-                  element={
-                    <RequireAuth>
-                      <CreateEditSpace
-                        setLoading={setLoading}
-                        loading={loading}
-                        pageTitle={CREATE_SPACE_PAGE_TITLE}
-                      />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path={`${SPACES_URL}/:spaceId/edit`}
-                  element={
-                    <RequireAuth>
-                      <CreateEditSpace
-                        setLoading={setLoading}
-                        loading={loading}
-                        pageTitle={EDIT_SPACE_PAGE_TITLE}
-                      />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path={`${SPACES_URL}/:spaceId`}
-                  element={
-                    <Space/>
-                  }
-                />
-                <Route
-                  path={`${USERS_URL}/:uid`}
-                  element={
-                    <RequireAuth>
-                      <User/>
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path={PROFILE_URL}
-                  element={
-                    <RequireAuth>
-                      <Profile/>
-                    </RequireAuth>
-                  }
-                />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Toolbar />
+            <Container>
+              <Routes>
+                  <Route
+                    path={SIGN_IN_UP_URL}
+                    element={
+                      <Signinup/>
+                    }
+                  />
+                  <Route
+                    path={HOME_URL}
+                    element={
+                      <Home/>
+                    }
+                  />
+                  <Route
+                    path={`${SPACES_URL}/create`}
+                    element={
+                      <RequireAuth>
+                        <CreateEditSpace
+                          setLoading={setLoading}
+                          loading={loading}
+                          pageTitle={CREATE_SPACE_PAGE_TITLE}
+                        />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={`${SPACES_URL}/:spaceId/edit`}
+                    element={
+                      <RequireAuth>
+                        <CreateEditSpace
+                          setLoading={setLoading}
+                          loading={loading}
+                          pageTitle={EDIT_SPACE_PAGE_TITLE}
+                        />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={`${SPACES_URL}/:spaceId`}
+                    element={
+                      <Space/>
+                    }
+                  />
+                  <Route
+                    path={`${USERS_URL}/:uid`}
+                    element={
+                      <RequireAuth>
+                        <User/>
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={PROFILE_URL}
+                    element={
+                      <RequireAuth>
+                        <Profile/>
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={`${PROFILE_URL}/edit`}
+                    element={
+                      <RequireAuth>
+                        <ProfileEdit
+                          loading={loading}
+                          setLoading={setLoading}
+                        />
+                      </RequireAuth>
+                    }
+                  />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Container>
           </Box>
       </div>
   );

@@ -3,20 +3,22 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 
 // MUI components
 import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 
 // components
 import SpaceCard from '../common/SpaceCard/SpaceCard'
-import SapceCardSkeleton from '../common/SpaceCardSkeleton/SpaceCardSkeleton'
+import SpaceCardSkeleton from '../common/SpaceCardSkeleton/SpaceCardSkeleton'
 
 // context
 import useAuth from '../../firebase/auth'
 import useSpaces from '../../firebase/space'
 
 // constants
-import { HOME_URL } from '../../constants'
+import { HOME_URL, NO_SPACE } from '../../constants'
+import { Grid } from '@mui/material'
+import DividerWithTitle from '../common/DividerWithTitle/DividerWithTitle'
+import SpaceCardList from '../common/SpaceCardList/SpaceCardList'
 
 const Home = () => {
   const [queryParameters] = useSearchParams()
@@ -44,38 +46,45 @@ const Home = () => {
 
   
   return (
-      <Container>
+      <>
       {!authUser && 
         (
           <Typography
-              variant="h3"
+              variant="h4"
               gutterBottom
               align='center'
+              sx={{
+                textTransform: 'uppercase'
+              }}
             >
               Sign up to start learning
           </Typography>
       )}
       {authUser && 
         <Typography
-            variant="h3"
+            variant="h4"
             gutterBottom
             align='center'
+            sx={{
+              textTransform: 'uppercase'
+            }}
           >
             Join a learning space below
         </Typography>
       }
       <Box>
-        <Typography
-            variant="h5"
-            gutterBottom
-          >
-            Co-learning Spaces
-        </Typography>
+        <DividerWithTitle title='Co-learning Spaces'/>
         {keyword && (
-          <Box sx={{marginBottom: '15px'}}>
+          <Box sx={{
+            mb: '15px'
+          }}>
           <Typography
               variant="caption"
               gutterBottom
+              sx={{
+                fontStyle: 'italic',
+                pr: '15px'
+              }}
             >
               Filter by keyword: 
           </Typography>
@@ -83,33 +92,12 @@ const Home = () => {
           </Box>
         )}
       </Box>
-      {
-        isLoading ?
-          <SapceCardSkeleton />
-        : !spaces.length
-          ?
-          <Typography
-              variant="h6"
-              gutterBottom
-              align='center'
-            >
-              No spaces currectly.
-          </Typography>
-          :
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '25px',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start'
-            }}
-          >
-            {spaces.map((space) => (
-              <SpaceCard space={space} key={space.id} />
-            ))}
-          </Box>
-      }
-    </Container>
+      <SpaceCardList
+        spaces={spaces} 
+        isLoading={isLoading}
+        noMessage={NO_SPACE}
+      />
+    </>
   )
 }
 

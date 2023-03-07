@@ -16,7 +16,7 @@ const DateTillToday = ({date}) => {
             variant='caption'
             sx={{
               fontStyle: 'italic',
-              paddingRight: '10px'
+              pr: '10px'
             }}
           >
             {

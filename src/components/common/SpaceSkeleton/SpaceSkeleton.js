@@ -2,7 +2,7 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Skeleton from '@mui/material/Skeleton'
-import { Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 
 const SpaceSkeleton = () => {
   return (
@@ -39,7 +39,7 @@ const SpaceSkeleton = () => {
           }}
         >
           <Skeleton variant="circular" width={54} height={54} />
-          <Box sx={{marginLeft: 'auto', display: 'flex',}}>
+          <Box sx={{ml: 'auto', display: 'flex',}}>
             <Skeleton variant="circular" width={54} height={54} />
             <Skeleton variant="circular" width={54} height={54}/>
           </Box>
@@ -58,51 +58,40 @@ const SpaceSkeleton = () => {
         </Box>
       </Stack>
       <Stack spacing={1}>
-        <Box
-          sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '15px'
-          }}
-        >
-          <Typography variant="body1" sx={{flexGrow: .7}}>
-            <Skeleton />
-          </Typography>
-          <Typography variant="body1" sx={{flexGrow: .3}}>
-            <Skeleton />
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '15px'
-          }}
-        >
-          <Typography variant="body1" sx={{flexGrow: .7}}>
-            <Skeleton />
-          </Typography>
-          <Typography variant="body1" sx={{flexGrow: .3}}>
-            <Skeleton />
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '15px'
-          }}
-        >
-          <Typography variant="body1" sx={{flexGrow: .7}}>
-            <Skeleton />
-          </Typography>
-          <Typography variant="body1" sx={{flexGrow: .3}}>
-            <Skeleton />
-          </Typography>
-        </Box>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={12} lg={8}>
+            <Typography variant="body1">
+              <Skeleton />
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} lg={4}>
+            <Typography variant="body1">
+              <Skeleton />
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={12} lg={8}>
+            <Typography variant="body1">
+              <Skeleton />
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} lg={4}>
+            <Typography variant="body1">
+              <Skeleton />
+            </Typography>
+          </Grid>
+          
+          <Grid item sm={12} lg={8}>
+            <Typography variant="body1">
+              <Skeleton />
+            </Typography>
+          </Grid>
+          <Grid item sm={12} lg={4}>
+            <Typography variant="body1">
+              <Skeleton />
+            </Typography>
+          </Grid>
+        </Grid>
       </Stack>
     </Box>
   )

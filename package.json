@@ -1,6 +1,6 @@
 {
   "name": "easy",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -14,6 +14,8 @@
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "firebase": "^9.15.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebaseui": "^6.0.0",
@@ -46,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "^2.8.3"
   }
 }
