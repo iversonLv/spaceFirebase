@@ -147,7 +147,7 @@ All route URLs are set at `constants.js`
 [x] Updated firebase default array method rather than javascript push/filter  
 [x] Home page, leave/join not dynamic update, move the number into avatar group  
 [x] filter keywords, navigate back home, won't reset  
-[] Delete post/comment: TODO, the related data should be removed  
+[x] Delete post/comment
 [90%] Edit post/comment, page can't scroll  
 [] Loading look buggy  
     [x] user profile, will load the !data.length then load data

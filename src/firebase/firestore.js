@@ -67,30 +67,24 @@ export const deletePostComment = async (type, id, uid, spaceId, parentId, postId
     const docRef = type === TYPE_POST ? doc(db, POSTS_COLLECTION, id) : doc(db, COMMENTS_COLLECTION, id)
     
     const docAuthUserRef = doc(db, USERS_COLLECTION, uid)
+    const docSpaceRef = doc(db, SPACES_COLLECTION, spaceId)
     // delete the post or comment of the id
     batch.delete(docRef)
+    // remove the id from the space postId array
+    batch.update(docSpaceRef, {
+      postsId: arrayRemove(id)
+    })
 
     // need to remove the deleted post's or comment's comments
-    const q = query(collection(db, COMMENTS_COLLECTION), where('parentId', "==", id))
-    const querySnapshot = await getDocs(q);
-    // Get a new write batch
-    for(const snapshot of querySnapshot.docs) {
-      const d = doc(db, COMMENTS_COLLECTION, snapshot.id )
-
-      // if 
-      
-      batch.delete(d);
-      batch.update(docAuthUserRef, {
-        commentsId: arrayRemove(snapshot.id)
-      })
-    }
-    
+    // if delete post, this parentId point to comment's comment, not work
+    await deleteCommentsRecursion(id, docAuthUserRef)  
     
     if (type === TYPE_COMMENT) {
 
       const parentDoc = parentId === postId ? doc(db, POSTS_COLLECTION, parentId) : doc(db, COMMENTS_COLLECTION, parentId)
       //const parentCommentDoc = doc(db, COMMENTS_COLLECTION, parentId)
   
+      // need remove the id from postId commentsId array
       batch.update(parentDoc, {
         commentsId: arrayRemove(id)
       })
@@ -104,7 +98,7 @@ export const deletePostComment = async (type, id, uid, spaceId, parentId, postId
       
       
       
-    // After new post created, the related author need push the postId as related
+    // After remove, the related author need delete the id 
     batch.update(docAuthUserRef, {
       [type+'sId']: arrayRemove(id)
     })
@@ -572,4 +566,25 @@ export const deleteSpace = async(uid, space) => {
       await deleteDoc(d)
     }
   }
+}
+
+const deleteCommentsRecursion = async(snapShotId, docAuthUserRef) => {
+  const batch = writeBatch(db)
+  const q = query(collection(db, COMMENTS_COLLECTION), where('parentId', "==", snapShotId))
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs.length > 0) {
+
+      // Get a new write batch
+      for(const snapshot of querySnapshot.docs) {
+        const d = doc(db, COMMENTS_COLLECTION, snapshot.id )
+        batch.delete(d);
+        batch.update(docAuthUserRef, {
+          commentsId: arrayRemove(snapshot.id)
+        })
+        // if this snapshot id of comment has other comments, will run the function again, unless the docs length is 0
+        await deleteCommentsRecursion(snapshot.id, docAuthUserRef)
+      }
+  }
+  
+  await batch.commit();
 }
