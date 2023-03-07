@@ -28,7 +28,7 @@ import PostsCommentList from "../PostsCommentList/PostsCommentList";
 import CommonAvatar from "../CommonAvatar/CommonAvatar";
 import DividerWithTitle from "../DividerWithTitle/DividerWithTitle";
 
-const PostsComments = ({id, spaceAuthorUid, type}) => {
+const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
   const param = useParams()
   const { authUser } = useAuth()
   
@@ -65,7 +65,7 @@ const PostsComments = ({id, spaceAuthorUid, type}) => {
 
   const handleAddComment = async(id) => {
     setDisabledCreate(true)
-    await addComment(authUser, id, comment, type, param.spaceId, setGetCommentsLoading)
+    await addComment(authUser, id, comment, type, param.spaceId, postCommentAuthor, setGetCommentsLoading)
     // await getComments(type, id, setComments)
     setComment('')
     setSelectedId('')
@@ -105,7 +105,8 @@ const PostsComments = ({id, spaceAuthorUid, type}) => {
     <Box
       sx={{
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        pl: '72px'
       }}
     >
       <LikeDislike id={id} type={type}/>

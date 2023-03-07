@@ -109,10 +109,11 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
   }
   return (
     <>
-    <List sx={{ width: '100%', bgcolor: 'background.paper' }} ref={postRef}>
+    <List sx={{ width: '100%', bgcolor: 'background.paper', pl: type === 'comment' ? '72px' : '0px' }} ref={postRef}>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <CommonAvatar user={data?.author} />
+          {type === 'comment' && <CommonAvatar user={data?.author} sx={{width: '30px', height: '30px'}} />}
+          {type === 'post' && <CommonAvatar user={data?.author} />}
         </ListItemAvatar>
         <Box
           sx={{width: '100%'}}
@@ -143,6 +144,11 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
               </>
             }
           />
+            {data?.postCommentAuthor && (
+              <Button size="small" onClick={() => navigate(`${USERS_URL}/${data?.postCommentAuthor.uid}`)}>
+                @{data?.postCommentAuthor?.displayName}
+              </Button>
+            )}
             {!editMode && <MDEditor.Markdown source={data?.content} />}
 
 
@@ -374,6 +380,7 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
               id={id}
               spaceAuthorUid={spaceAuthorUid}
               source={data?.content}
+              postCommentAuthor={data?.author}
             />
     </>
   )

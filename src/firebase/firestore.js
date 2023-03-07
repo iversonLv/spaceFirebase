@@ -247,7 +247,7 @@ export const getComments = async (type, id, setComments) => {
  * @param  {String} spaceId: the comment or post belong to the space
  * @param  {fun} setLoading: loading
  */
-export const addComment = async (authUser, id, content, type, spaceId, setLoading) => {
+export const addComment = async (authUser, id, content, type, spaceId, postCommentAuthor, setLoading) => {
   setLoading(true)
   const docRef = type === TYPE_POST ? doc(db, POSTS_COLLECTION, id) : doc(db, COMMENTS_COLLECTION, id)
   const colComment = collection(db, COMMENTS_COLLECTION)
@@ -260,6 +260,7 @@ export const addComment = async (authUser, id, content, type, spaceId, setLoadin
     spaceId,
     parentId: id,
     [type+'Id']: id,
+    postCommentAuthor: {uid: postCommentAuthor.uid, displayName: postCommentAuthor.displayName},
     // Firebase default timestamp generate method
     createdOn: serverTimestamp(),
     updatedOn: serverTimestamp(),
