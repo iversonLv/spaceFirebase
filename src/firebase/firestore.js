@@ -319,6 +319,17 @@ export const getEditSpaceById = async(spaceId, setPartialSpace, setPreviewPhoto,
     setLoading(false)
   }
 }
+export const getSpaceKeywordsById = async(spaceId, setKeywords) => {
+  const docRef = doc(db, SPACES_COLLECTION, spaceId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    // if register user, we don't upload avatar for user, bucket should be null then user potoURL should be null rather than get download the URL or it will throw error
+    setKeywords([...docSnap.data().keywords])
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+}
 
 // get space by spaceId
 /**

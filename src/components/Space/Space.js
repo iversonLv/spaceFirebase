@@ -20,17 +20,17 @@ import 'react-tagsinput/react-tagsinput.css'
 // component
 import  JoinLeaveBtn from '../common/JoinLeaveBtn/JoinLeaveBtn'
 import  UserAvatarGroup from '../common/UserAvatarGroup/UserAvatarGroup'
-import SpaceCardList from '../common/SpaceCardList/SpaceCardList'
+import SpaceCardRelatedList from '../common/SpaceCardRelatedList/SpaceCardRelatedList'
 import SpacePostsComments from '../common/SpacePostsComments/SpacePostsComments'
 import CommonAvatar from '../common/CommonAvatar/CommonAvatar'
 import DateTillToday from '../common/DateTillToday/DateTillToday'
 
 // context
 import useAuth from '../../firebase/auth'
-import { getSpaceById, getRelatedSpaces } from '../../firebase/firestore'
+import { getSpaceById } from '../../firebase/firestore'
 
 // constants
-import { HOME_URL, LOAD_MORE_NUMBER, NO_RELATED_SPACE, NO_SUCH_SPACE, SIGN_IN_UP_URL } from '../../constants'
+import { HOME_URL, NO_RELATED_SPACE, NO_SUCH_SPACE, SIGN_IN_UP_URL } from '../../constants'
 
 // component
 import SpaceSkeleton from '../common/SpaceSkeleton/SpaceSkeleton'
@@ -45,10 +45,6 @@ const Space = () => {
   const { fetchSpaces } = useSpaces()
   const [space, setSpace] = useState({})
 
-  const [relatedSpaces, setRelatedSpaces] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  // load more will load more 3
-  const [loadNumber, setLoadNumber] = useState(LOAD_MORE_NUMBER)
   const [getSpaceByIdLoading, setGetSpaceByIdLoading] = useState(true)
   // get space
   useEffect(() => {
@@ -56,20 +52,10 @@ const Space = () => {
       await getSpaceById(params.spaceId, setSpace, setGetSpaceByIdLoading)
     }
     unscribe()
-  }, [params, authUser, setGetSpaceByIdLoading]);
-
-  useEffect(() => {
-      getRelatedSpaces(space?.keywords, space?.id, setRelatedSpaces, setIsLoading)
-  }, [space])
-
-  const loadingMoreRelatedSpaced = () => {
-    let n = loadNumber + 3
-    console.log(n, relatedSpaces.length)
-    n > relatedSpaces.length ? setLoadNumber(relatedSpaces.length) : setLoadNumber(n)
-  }
+    return () => unscribe()
+  }, [params.spaceId, setGetSpaceByIdLoading]);
 
   const handleBackArrow = () => {
-    // console.log(pathname)
     navigate(-1)
   }
 
@@ -195,26 +181,11 @@ const Space = () => {
           {
             !authUser && <Button variant="outlined" size='small' onClick={() => navigate(SIGN_IN_UP_URL)}>Login to view post</Button>
           }
-          <>
-            <SpaceCardList
-              isLoading={isLoading}
-              spaces={relatedSpaces.slice(0, loadNumber)}
-              title="Related Spaces"
-              noMessage={NO_RELATED_SPACE}
-              />
-            {!isLoading && relatedSpaces.length > loadNumber  && 
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  m: '10px 0'
-                }}
-              >
-                <Button onClick={loadingMoreRelatedSpaced}>Load More</Button>
-              </Box>
-            }
-          </>
+          <SpaceCardRelatedList
+            spaceId={params.spaceId}
+            title="Related Spaces"
+            noMessage={NO_RELATED_SPACE}
+          />
         </>
       )}
       {!Object.keys(space).length && !getSpaceByIdLoading &&
