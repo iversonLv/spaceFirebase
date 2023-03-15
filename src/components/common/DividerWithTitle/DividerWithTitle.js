@@ -1,8 +1,11 @@
+import { memo } from 'react'
+ 
 // MUI components
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 
-const DividerWithTitle = ({title}) => {
+const DividerWithTitle = memo(({title}) => {
+  console.log('render')
   return (
     <Divider
       sx={{
@@ -19,6 +22,6 @@ const DividerWithTitle = ({title}) => {
       </Typography>
     </Divider>
   )
-}
+})
 
 export default DividerWithTitle
