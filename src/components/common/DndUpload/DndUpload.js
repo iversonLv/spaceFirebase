@@ -1,11 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 import './DndUpload.css'
-const DndUpload = ({setThumbnail, previewPhoto, setPreviewPhoto, disabled, shape='retangle'}) => {
-
+const DndUpload = memo(({setThumbnail, previewPhoto, setPreviewPhoto, disabled, shape='retangle'}) => {
   // drag state
   const [dragActive, setDragActive] = useState(false);
   
@@ -95,6 +94,6 @@ const DndUpload = ({setThumbnail, previewPhoto, setPreviewPhoto, disabled, shape
         )}
       </Box>
   )
-}
+})
 
 export default DndUpload
