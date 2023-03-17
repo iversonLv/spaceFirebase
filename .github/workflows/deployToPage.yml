@@ -44,8 +44,8 @@ jobs:
         
     - name: Install dependencies
       run: |
-        rm package-lock.json
         npm install --force
+        npm install react-scripts --force
     
     - name: Remove existing docs
       run: rm -rf docs
