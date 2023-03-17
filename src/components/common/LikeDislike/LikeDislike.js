@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 
 // firebase
 import useAuth from "../../../firebase/auth";
@@ -20,8 +20,7 @@ import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import { DisLike_T, Like_T } from "../../../constants";
 
-const LikeDislike = ({id, type}) => {
-  
+const LikeDislike = memo(({id, type}) => {
   const { authUser } = useAuth()
   const [likeDislike, setLikeDislike] = useState("")
   const [likeCount, setLikeCount] = useState()
@@ -91,6 +90,6 @@ const LikeDislike = ({id, type}) => {
       </RadioGroup>
     </FormControl>
   )
-}
+})
 
 export default LikeDislike

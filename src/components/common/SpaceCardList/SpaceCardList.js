@@ -1,3 +1,4 @@
+import { memo } from 'react'  
 // Mui component
 import { Grid, Typography } from '@mui/material'
 
@@ -12,7 +13,7 @@ import SpaceCardSkeleton from '../SpaceCardSkeleton/SpaceCardSkeleton'
  * @param  {} noMessage: no list show the message
  * @param  {} children: if authUser need some data
  */
-const SpaceCardList = ({isLoading, spaces, title, noMessage, children}) => {
+const SpaceCardList = memo(({isLoading, spaces, title, noMessage, children}) => {
   const NoMessageBlock = () => (
     <Typography
       variant="body2"
@@ -43,6 +44,6 @@ const SpaceCardList = ({isLoading, spaces, title, noMessage, children}) => {
     }
     </>
   )
-}
+})
 
 export default SpaceCardList

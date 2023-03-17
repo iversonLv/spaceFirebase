@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import Tooltip from "@mui/material/Tooltip";
 
 import { format } from 'date-fns'
@@ -5,8 +7,7 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import { Typography } from '@mui/material';
 
-const DateTillToday = ({date}) => {
-
+const DateTillToday = memo(({date}) => {
   return (
     <>
       {date && 
@@ -32,6 +33,6 @@ const DateTillToday = ({date}) => {
       }
     </>
   )
-}
+})
 
 export default DateTillToday

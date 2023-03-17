@@ -1,3 +1,4 @@
+import { memo } from 'react'
 // MUI component
 import TextField from '@mui/material/TextField'
 
@@ -13,7 +14,7 @@ import TextField from '@mui/material/TextField'
  * 
  * More detail: https://mui.com/material-ui/react-text-field/
  */
-const TextForm = ({name, variant='outlined', type='text', isFullWidth = true, handleChange, props, required = false, value, size='small', sx={}, margin='normal', disabled=false }) => {
+const TextForm = memo(({name, variant='outlined', type='text', isFullWidth = true, handleChange, props, required = false, value, size='small', sx={}, margin='normal', disabled=false }) => {
   return <TextField
 
       autoComplete='on'
@@ -32,6 +33,6 @@ const TextForm = ({name, variant='outlined', type='text', isFullWidth = true, ha
       size={size}
       sx={sx}
   />
-}
+})
 
 export default TextForm
