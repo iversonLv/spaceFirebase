@@ -5,8 +5,6 @@ import { db, SPACES_COLLECTION } from './firebase-config'
 
 import { checkBucketData } from './firestore'
 
-import { addSpaces } from "./test-data";
-
 const SpacesContext = createContext({
   spaces: [],
   isLoading: true

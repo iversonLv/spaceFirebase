@@ -58,15 +58,6 @@ import { db, SPACES_COLLECTION } from './firebase-config'
       overview: 'This overview will examine the ways in which technology is impacting education, including the use of online resources, virtual reality, and artificial intelligence. It will discuss the potential benefits and drawbacks of these technologies, and the impact they may have on the future of education.'
     }
   ]
-  const imageList = [
-    'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e?w=248&fit=crop&auto=format',
-    'https://mui.com/static/images/cards/contemplative-reptile.jpg',
-    'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c?w=248&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f?w=248&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=248&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1?w=248&fit=crop&auto=format'
-  ]
   const generateRandomMutiple = (data) => {
     let finall = []
     let randomLength = Math.floor(Math.random() * data.length)

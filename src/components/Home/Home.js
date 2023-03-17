@@ -6,9 +6,6 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 
-// components
-import SpaceCard from '../common/SpaceCard/SpaceCard'
-import SpaceCardSkeleton from '../common/SpaceCardSkeleton/SpaceCardSkeleton'
 
 // context
 import useAuth from '../../firebase/auth'
@@ -16,7 +13,6 @@ import useSpaces from '../../firebase/space'
 
 // constants
 import { HOME_URL, NO_SPACE } from '../../constants'
-import { Grid } from '@mui/material'
 import DividerWithTitle from '../common/DividerWithTitle/DividerWithTitle'
 import SpaceCardList from '../common/SpaceCardList/SpaceCardList'
 
