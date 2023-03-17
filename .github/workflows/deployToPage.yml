@@ -50,6 +50,7 @@ jobs:
     
     - name: Build app
       run: |
+        npm i react-scripts
         react-scripts build
         mv build docs
       
