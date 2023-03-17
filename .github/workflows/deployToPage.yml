@@ -1,0 +1,68 @@
+name: Deploy to gh-pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+        
+    - name: Set up Git identity
+      run: |
+        git config --global user.name "${{ github.event.head_commit.author.name }}"
+        git config --global user.email "${{ github.event.head_commit.author.email }}"
+    
+    - name: Install create react app
+      run: npm install -g create-react-app
+
+    - name: Checkout master branch
+      uses: actions/checkout@v2
+      with:
+        ref: master
+
+    - name: Checkout gh-pages branch
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+        fetch-depth: 0
+
+    - name: Merge master branch into gh-pages
+      run: git merge --no-commit --no-ff origin/master
+      
+    - name: Remove node modules folder and clean cache
+      run: |
+        rm -rf node_modules
+        npm cache clean --force
+        
+    - name: Install dependencies
+      run: npm install --force
+    
+    - name: Remove existing docs
+      run: rm -rf docs
+    
+    - name: Build app
+      run: |
+        react-scripts build
+        mv build docs
+      
+    - name: Copy docs index.html and rename 404.html
+      run: cp docs/index.html docs/404.html
+      
+    - name: Add and Commit
+      run: |
+        git add .
+        git commit -m "Merge master branch into gh-pages"
+
+    - name: Push changes to gh-pages
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
