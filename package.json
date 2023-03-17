@@ -2,7 +2,7 @@
   "name": "easy",
   "version": "4.0.0",
   "private": true,
-  "homepage": "https://iversonlv.github.io/spaceFirebase/",
+  "homepage": "https://iversonlv.github.io/spaceFirebase/app",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
