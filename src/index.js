@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import { BrowserRouter as Router} from 'react-router-dom'
+import { HashRouter} from 'react-router-dom'
 import { AuthUserProvider } from './firebase/auth'
 import { SpacesProvider } from './firebase/space'
 
@@ -13,9 +13,9 @@ root.render(
   // <React.StrictMode>
     <SpacesProvider>
       <AuthUserProvider>
-        <Router>
+        <HashRouter>
           <App />
-        </Router>
+        </HashRouter>
       </AuthUserProvider>
     </SpacesProvider>
   // </React.StrictMode>
