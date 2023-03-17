@@ -121,7 +121,7 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
       ? <Button variant="outlined" color="warning" size='small'  disabled={loading} onClick={(e) => handleOpenDialog(e, 'Leave')}>Leave</Button>
       : <Button variant="outlined" size='small' disabled={loading} onClick={(e) => handleJoin(e)}>Join</Button>
       }
-        <SnackbarAlert open={open} handleClose={handleClose} message={message}/>
+        {open && <SnackbarAlert open={open} handleClose={handleClose} message={message}/>}
       </>
     ) 
   }

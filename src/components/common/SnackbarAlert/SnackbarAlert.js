@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
-const SnackbarAlert = ({ open, handleClose, message, severity='success' }) => {
+const SnackbarAlert = memo(({ open, handleClose, message, severity='success' }) => {
   return (
     <Snackbar
       open={open}
@@ -20,6 +21,6 @@ const SnackbarAlert = ({ open, handleClose, message, severity='success' }) => {
       </Alert>
     </Snackbar>
   )
-}
+})
 
 export default SnackbarAlert

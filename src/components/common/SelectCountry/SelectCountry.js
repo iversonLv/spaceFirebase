@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import countryList from "react-select-country-list";
 
 // Mui components
@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 
-const SelectCountry = ({setCountry, country}) => {
+const SelectCountry = memo(({setCountry, country}) => {
   const options = useMemo(() => countryList().getData(), []);
   const handleChange = (e, newValue) => {
     e.preventDefault();
@@ -49,6 +49,6 @@ const SelectCountry = ({setCountry, country}) => {
       )}
     />
   )
-}
+})
 
 export default SelectCountry

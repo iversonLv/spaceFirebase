@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 
 // MUI components
 import AvatarGroup from '@mui/material/AvatarGroup'
@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import { getSpaceActiveUsers } from '../../../firebase/firestore'
 import CommonAvatar from '../CommonAvatar/CommonAvatar'
 
-const UserAvatarGroup = ({spaceId}) => {
+const UserAvatarGroup = memo(({spaceId}) => {
   const [activeUsers, setActiveUsers] = useState([])
 
   useEffect(() => {
@@ -46,6 +46,6 @@ const UserAvatarGroup = ({spaceId}) => {
       </AvatarGroup>
     </Box>
   )
-}
+})
 
 export default UserAvatarGroup

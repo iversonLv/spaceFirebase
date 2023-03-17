@@ -361,7 +361,7 @@ const ProfileEdit = ({loading, setLoading}) => {
           </Button>
         </Grid>
       </Grid>
-      <SnackbarAlert open={open} handleClose={handleClose} message={message} severity='success'/>
+      {open && <SnackbarAlert open={open} handleClose={handleClose} message={message} severity='success'/>}
     </>
   )
 }
