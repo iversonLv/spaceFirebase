@@ -43,16 +43,15 @@ jobs:
         npm cache clean --force
         
     - name: Install dependencies
-      run: npm install --force
+      run: |
+        rm package-lock.json
+        npm install --force
     
     - name: Remove existing docs
       run: rm -rf docs
     
     - name: Build app
       run: |
-        npm audit fix
-        npm install -g svgo
-        npm i react-scripts
         react-scripts build
         mv build docs
       
