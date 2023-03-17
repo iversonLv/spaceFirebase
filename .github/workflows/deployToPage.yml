@@ -50,6 +50,8 @@ jobs:
     
     - name: Build app
       run: |
+        npm audit fix
+        npm install -g svgo
         npm i react-scripts
         react-scripts build
         mv build docs
