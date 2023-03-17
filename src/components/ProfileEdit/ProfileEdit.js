@@ -20,7 +20,7 @@ import DividerWithTitle from "../common/DividerWithTitle/DividerWithTitle";
 const ProfileEdit = ({loading, setLoading}) => {
   const navigate = useNavigate()
   const { authUser, updateUserInfo, forgotPassword, reAuthWithPassword, updateUserPassword } = useAuth()
-  const { biography, uid, country: userCountry, interests: userInsterests } = authUser
+  const { biography, uid, country: userCountry, interests: userInsterests, photoURL } = authUser
   
   const [interests, setInterests] = useState(userInsterests ?? [])
 
@@ -29,7 +29,7 @@ const ProfileEdit = ({loading, setLoading}) => {
   const [disabledBtn, setDisabledBtn] = useState(false)
   
   const [thumbnail, setThumbnail] = useState()
-  const [previewPhoto, setPreviewPhoto] = useState(authUser.photoURL)
+  const [previewPhoto, setPreviewPhoto] = useState(photoURL)
   // useEffect(() => {
   //  if (
   //   checkObj(otherFields)||
@@ -120,8 +120,6 @@ const ProfileEdit = ({loading, setLoading}) => {
     setMessage('')
     setOpen(false)
     await reAuthWithPassword(passwords?.currentPassword, setLoading, setMessage, setInvalid)
-    console.log(invalid)
-    console.log(message)
     if (invalid) {
       setOpen(true)
       return

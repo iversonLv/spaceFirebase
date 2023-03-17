@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 
 import {
   onAuthStateChanged,
@@ -171,9 +171,11 @@ const useFirebaseAuth = () => {
     return unscribe()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
+  const contextValue  = useMemo(() => ({
+    authUser
+  }), [authUser])
   return {
-    authUser, 
+    ...contextValue, 
     isLoading,
     logout,
     signIn,

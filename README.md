@@ -182,6 +182,8 @@ All route URLs are set at `constants.js`
 [] fav spaces?
 [] new created spaces show a icon
 [x] Export post to PDF
+[] reducer?
+[] check the state whether could be calculate component itself rather than create useState
 
 xs: < 599
 sm: 600 - 899

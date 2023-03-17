@@ -354,7 +354,7 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
 
 
            
-          {data.id}
+          {/* {data.id} */}
           </Box>
         
           

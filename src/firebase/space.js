@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo } from 'react'
 
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db, SPACES_COLLECTION } from './firebase-config'
@@ -66,10 +66,12 @@ const useFirebaseSpaces = () => {
     return () => unscribe()
   }, []);
 
-
+  const contextValue  = useMemo(() => ({
+    spaces
+  }), [spaces])
   return {
     fetchSpaces,
-    spaces,
+    ...contextValue,
     isLoading,
     setIsLoading
   }
