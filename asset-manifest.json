@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/spaceFirebase/static/css/main.cca5a3e1.css",
-    "main.js": "/spaceFirebase/static/js/main.9012618f.js",
+    "main.js": "/spaceFirebase/static/js/main.bd6c783e.js",
     "static/js/703.fa67a6f5.chunk.js": "/spaceFirebase/static/js/703.fa67a6f5.chunk.js",
     "static/js/513.1b5db85f.chunk.js": "/spaceFirebase/static/js/513.1b5db85f.chunk.js",
     "static/js/787.0708e436.chunk.js": "/spaceFirebase/static/js/787.0708e436.chunk.js",
     "index.html": "/spaceFirebase/index.html",
     "main.cca5a3e1.css.map": "/spaceFirebase/static/css/main.cca5a3e1.css.map",
-    "main.9012618f.js.map": "/spaceFirebase/static/js/main.9012618f.js.map",
+    "main.bd6c783e.js.map": "/spaceFirebase/static/js/main.bd6c783e.js.map",
     "703.fa67a6f5.chunk.js.map": "/spaceFirebase/static/js/703.fa67a6f5.chunk.js.map",
     "513.1b5db85f.chunk.js.map": "/spaceFirebase/static/js/513.1b5db85f.chunk.js.map",
     "787.0708e436.chunk.js.map": "/spaceFirebase/static/js/787.0708e436.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cca5a3e1.css",
-    "static/js/main.9012618f.js"
+    "static/js/main.bd6c783e.js"
   ]
 }
