@@ -169,7 +169,6 @@ const useFirebaseAuth = () => {
     // setTimeout(() => {
     // }, 0);
     return unscribe()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const contextValue  = useMemo(() => ({
     authUser
@@ -184,7 +183,8 @@ const useFirebaseAuth = () => {
     updateUserInfo,
     forgotPassword,
     reAuthWithPassword,
-    updateUserPassword
+    updateUserPassword,
+    authStateChanged
   }
 }
 
