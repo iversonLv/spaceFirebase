@@ -97,7 +97,7 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
 
   return (
     <>
-    {getEditSpaceByIdLoading && <SpaceSkeleton />}
+    {getEditSpaceByIdLoading && <CreateEditSpaceSkeleton />}
     {!!Object.keys(spaceField).length && !getEditSpaceByIdLoading && (
       <>
         <BackArrowTitleWithActionBtn
