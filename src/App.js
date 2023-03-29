@@ -61,7 +61,7 @@ const App = () => {
       isLoading ? 
         <LinearProgress color="secondary"/>
       :
-      <div>
+      <>
           {loading && <LinearProgress color="secondary" sx={{zIndex: 1101, position: 'fixed', width: '100%'}}/>}
           <Header />
           <Box component="main" sx={{
@@ -145,7 +145,7 @@ const App = () => {
             </Container>
           </Box>
           <Footer />
-      </div>
+      </>
   );
 }
 

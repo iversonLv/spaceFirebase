@@ -43,7 +43,7 @@ const Header = () => {
   }
   
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }} component='header'>
       <AppBar component="nav">
         <Toolbar>
           <Typography
