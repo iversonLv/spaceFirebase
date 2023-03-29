@@ -24,6 +24,8 @@ const Signinup = () => {
     // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
     callbacks: {
       signInSuccessWithAuthResult: () => {
+        // Here we need detect the state of authUser or not
+        // Or navigate home page, header won't change
         onAuthStateChanged(auth, authStateChanged)
         navigate(HOME_URL)
         
