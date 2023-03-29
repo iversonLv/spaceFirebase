@@ -17,35 +17,39 @@ import {
   ListItemText,
   Typography
 } from "@mui/material"
-
+// MUI icons
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 // constants
 import { TYPE_COMMENT, TYPE_POST, USERS_URL } from '../../../constants'
+
+// components
 import PostsComments from '../PostsComments/PostsComments';
 import PostCommentAction from '../PostCommentAction/PostCommentAction';
-import useAuth from '../../../firebase/auth';
-import { updateCommentPost } from '../../../firebase/firestore';
-import TextForm from '../TextForm/TextForm';
 import CommonAvatar from '../CommonAvatar/CommonAvatar';
 import DateTillToday from '../DateTillToday/DateTillToday';
 import DividerWithTitle from '../DividerWithTitle/DividerWithTitle';
+import TextForm from '../TextForm/TextForm';
+
+import useAuth from '../../../firebase/auth';
+import { updateCommentPost } from '../../../firebase/firestore';
 
 const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
-  const postRef = useRef(null);
+  // Context
   const { authUser } = useAuth()
+  // Hook
   const navigate = useNavigate()
+  // Ref
+  const postRef = useRef(null);
+  // State
   const [editMode, setEditMode] = useState(false)
-  const navigateUserPage = (uid) => {
-    navigate(`${USERS_URL}/${uid}`)
-  }
-
-
   const [post, setPost] = useState({title: data?.title, content: data?.content})
   const [disabledUpdatePost, setDisabledUpdatePost] = useState(false)
-  
   const [comment, setComment] = useState(data?.content)
   const [disabledUpdated, setDisabledUpdated] = useState(false)
+
+  // Event function
+  const navigateUserPage = (uid) => navigate(`${USERS_URL}/${uid}`)
 
   const handleUpdateComment = async() => {
     setDisabledUpdated(true)
@@ -56,6 +60,7 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
     // getCommentsCounts(type, id, setCommentsCount)
 
   }
+  
   const handleCancel = () => {
     setEditMode(false)
     setComment(data?.content)
