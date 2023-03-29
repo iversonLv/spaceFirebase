@@ -6,7 +6,9 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 const Footer = () => {
   return (
-    <footer>
+    <Box component='footer' sx={{
+      mt: '40px'
+    }}>
       <Divider />
       <Box
         sx={{
@@ -35,7 +37,7 @@ const Footer = () => {
           </IconButton>
         </Box>
       </Box>
-    </footer>
+    </Box>
   )
 }
 

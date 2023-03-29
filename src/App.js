@@ -64,7 +64,10 @@ const App = () => {
       <div>
           {loading && <LinearProgress color="secondary" sx={{zIndex: 1101, position: 'fixed', width: '100%'}}/>}
           <Header />
-          <Box component="main" sx={{ p: 3 }}>
+          <Box component="main" sx={{
+            p: 3,
+            minHeight: 'calc(100vh - 118px - 40px)'
+            }}>
             <Toolbar />
             <Container>
               <Routes>
