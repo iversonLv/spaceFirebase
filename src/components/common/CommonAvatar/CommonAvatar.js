@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useNavigate } from "react-router-dom";
 
 // Mui components
@@ -11,9 +12,11 @@ import { PROFILE_URL, USERS_URL } from "../../../constants";
  * @param  {boolean} me: whether login user, if yes, click the avatar will go to my profile otherwise to user profile, default is false
  * @param  {object} sx={} : for compnoent material sx style
  */
-const CommonAvatar = ({user, tooltipPlacement='top', me=false, sx={}}) => {
+const CommonAvatar = memo(({user, tooltipPlacement='top', me=false, sx={}}) => {
+  // Hook
   const navigate = useNavigate()
 
+  // Event function
   const handleClickAvatar = (e, uid) => {
     // As the avatar sometimes locates at cards which card will direct to detail page, so need to stop the propagation()
     e.stopPropagation();
@@ -39,6 +42,6 @@ const CommonAvatar = ({user, tooltipPlacement='top', me=false, sx={}}) => {
       </Avatar>
     </Tooltip>
   )
-}
+})
 
 export default CommonAvatar
