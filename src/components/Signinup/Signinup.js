@@ -1,17 +1,13 @@
+import { useNavigate } from 'react-router-dom'
+
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { EmailAuthProvider, onAuthStateChanged } from 'firebase/auth';
+
 // Constants
 import { HOME_URL } from "../../constants";
-import { useNavigate } from 'react-router-dom'
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-import { EmailAuthProvider } from 'firebase/auth';
-
-import {
-  onAuthStateChanged
-} from 'firebase/auth'
 // context
 import { auth } from "../../firebase/firebase-config";
-
-// context
 import useAuth from '../../firebase/auth'
 
 const Signinup = () => {
