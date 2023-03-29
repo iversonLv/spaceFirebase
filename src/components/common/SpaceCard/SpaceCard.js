@@ -9,24 +9,27 @@ import Typography from '@mui/material/Typography'
 import CardActions from '@mui/material/CardActions'
 import Chip from '@mui/material/Chip'
 import Box from '@mui/material/Box'
+import Tooltip  from "@mui/material/Tooltip"
 
 // component
 import JoinLeaveBtn from '../JoinLeaveBtn/JoinLeaveBtn'
 import UserAvatarGroup from '../UserAvatarGroup/UserAvatarGroup'
+import CommonAvatar from "../CommonAvatar/CommonAvatar"
+import DateTillToday from "../DateTillToday/DateTillToday"
+
 // constatns
 import { SPACES_URL, HOME_URL } from "../../../constants"
 
 // context
 import useSpaces from '../../../firebase/space'
-import CommonAvatar from "../CommonAvatar/CommonAvatar"
-import DateTillToday from "../DateTillToday/DateTillToday"
-import { Tooltip } from "@mui/material"
 
 const SpaceCard = ({space}) => {
+  // Context
   const { fetchSpaces } = useSpaces()
-  
+  // Hook
   const navigate = useNavigate()
 
+  // Event function
   const handleClickBtn = (e, url) => {
     e.stopPropagation();
     navigate(url)
@@ -89,7 +92,7 @@ const SpaceCard = ({space}) => {
             </Typography>
           </Tooltip>
           <br/>
-          
+          {/* User avatar group */}
           <UserAvatarGroup spaceId={space.id}/>
         </CardContent>
       </Box>
@@ -107,9 +110,8 @@ const SpaceCard = ({space}) => {
             mb: '15px',
           }}
         >
-          {space && <JoinLeaveBtn space={space} listOrDetail='list'/>}
-          
-          
+          {/* Shows space action btns */}
+          {space && <JoinLeaveBtn space={space} />}
         </Box>
         <Box
           sx={{
@@ -120,7 +122,7 @@ const SpaceCard = ({space}) => {
             flexWrap: 'wrap'
           }}
         >
-
+        {/* Show space keywords */}
         {space.keywords.map((keyword, index) => (
           <Chip key={index} variant="outlined" size="small" label={keyword}
           onClick={(e) => filterKeywordsForSpace(e, keyword)}
