@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react"
+import { useParams } from "react-router-dom";
 
+// Markdown editor
+import MDEditor from '@uiw/react-md-editor';
+// Constants
+import { TYPE_COMMENT } from "../../../constants";
+// Firebase
+import { getComments, addComment } from "../../../firebase/firestore";
+import useAuth from "../../../firebase/auth";
 // Mui components
 import {
   Box,
@@ -15,13 +23,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-import { getComments, addComment } from "../../../firebase/firestore";
-
-// Markdown editor
-import MDEditor from '@uiw/react-md-editor';
-import useAuth from "../../../firebase/auth";
-import { useParams } from "react-router-dom";
-import { TYPE_COMMENT } from "../../../constants";
+// Components
 import LikeDislike from "../LikeDislike/LikeDislike";
 import PostsCommentsSkeleton from "../PostsCommentsSkeleton/PostsCommentsSkeleton";
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
@@ -29,23 +31,30 @@ import CommonAvatar from "../CommonAvatar/CommonAvatar";
 import DividerWithTitle from "../DividerWithTitle/DividerWithTitle";
 
 const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
-  const param = useParams()
+  // Context
   const { authUser } = useAuth()
-  
+  // Hook
+  const param = useParams()
+  // State
   const [loading, setLoading] = useState(false)
   const [comments, setComments] = useState([])
-
   const [disabledCreate, setDisabledCreate] = useState(false)
   const [showComment, setShowComment] = useState(false)
-  
   const [selectedId, setSelectedId] = useState('')
-  
   const [getCommentsLoading, setGetCommentsLoading] = useState(false)
-  
   const [comment, setComment] = useState('')
-  const handleReplay = (id) => {
-    setSelectedId(id)
-  }
+
+  // Effect
+  useEffect(() => {
+    const fetchComments = async() => {
+      await getComments(type, id, setComments)
+    }
+
+    fetchComments()
+  }, [id, type]);
+  
+  // Event function
+  const handleReplay = (id) => setSelectedId(id)
   // get posts
   // useEffect(() => {
   //   // const fetchComments = async() => {
@@ -55,13 +64,6 @@ const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
   //   getCommentsCounts(type, id, setCommentsCount)
   // }, [id, setCommentsCount, type]);
 
-  useEffect(() => {
-    const fetchComments = async() => {
-      await getComments(type, id, setComments)
-    }
-
-    fetchComments()
-  }, [id, type]);
 
   const handleAddComment = async(id) => {
     setDisabledCreate(true)
