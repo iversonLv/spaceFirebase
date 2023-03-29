@@ -9,7 +9,6 @@ import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutl
 const BackArrowTitleWithActionBtn = memo(({title, children}) => {
   // hook
   const navigate = useNavigate();
-
   
   return (
     <Box

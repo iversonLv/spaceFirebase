@@ -1,10 +1,10 @@
 import { memo } from 'react'
 
-import Tooltip from "@mui/material/Tooltip";
-
 import { format } from 'date-fns'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
+// MUI component
+import Tooltip from "@mui/material/Tooltip";
 import { Typography } from '@mui/material';
 
 const DateTillToday = memo(({date}) => {
