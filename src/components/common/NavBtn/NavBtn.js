@@ -1,10 +1,9 @@
-import {useNavigate, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 // MUI component
 import Button from '@mui/material/Button'
 
 const NavBtn = ({route, label}) => {
-  const navigate = useNavigate()
   return (
     <Button
       component={NavLink}
