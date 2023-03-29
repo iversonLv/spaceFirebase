@@ -7,10 +7,13 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import useAuth from "../../../firebase/auth";
 
 const Menu = ({toggleDrawer}) => {
+  // Context
+  const { logout, authUser, isLoading } = useAuth()
+  // Hook
   const location = useLocation()
   const navigate = useNavigate()
-  const { logout, authUser, isLoading } = useAuth()
 
+  // Event function
   const handleLogout = () => {
     logout()
     navigate(SIGN_IN_UP_URL)

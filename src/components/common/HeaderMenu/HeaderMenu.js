@@ -10,7 +10,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import Menu from "./Menu";
 
 const HeaderMenu = () => {
-
+// State
 // mobile menu
 const [showMenu, setShowMenu] = useState(false);
 // For accessibility

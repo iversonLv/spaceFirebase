@@ -31,8 +31,12 @@ import CommonAvatar from '../CommonAvatar/CommonAvatar'
 import HeaderMenu from '../HeaderMenu/HeaderMenu';
 
 const Header = () => {
+  // Context
   const { logout, authUser, isLoading } = useAuth()
+  // Hook
   const navigate = useNavigate()
+
+  // Event function
   const handleLogout = () => {
     logout()
     navigate(SIGN_IN_UP_URL)
