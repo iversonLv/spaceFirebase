@@ -5,7 +5,7 @@ import { Grid, Typography } from '@mui/material'
 // component
 import  SpaceCard from '../SpaceCard/SpaceCard'
 import  DividerWithTitle from '../DividerWithTitle/DividerWithTitle'
-import SpaceCardSkeleton from '../SpaceCardSkeleton/SpaceCardSkeleton'
+import SpaceCardSkeleton from '../SpaceCard/SpaceCardSkeleton'
 /**
  * @param  {} isLoading: loading show skeleton, then load no message or space card list
  * @param  {} spaces: spaces data

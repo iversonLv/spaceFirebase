@@ -5,7 +5,7 @@ import { Box, Button, Grid, Typography } from '@mui/material'
 // component
 import  SpaceCard from '../SpaceCard/SpaceCard'
 import  DividerWithTitle from '../DividerWithTitle/DividerWithTitle'
-import SpaceCardSkeleton from '../SpaceCardSkeleton/SpaceCardSkeleton'
+import SpaceCardSkeleton from '../SpaceCard/SpaceCardSkeleton'
 
 import { getRelatedSpaces, getSpaceKeywordsById } from '../../../firebase/firestore'
 import { LOAD_MORE_NUMBER } from '../../../constants'
