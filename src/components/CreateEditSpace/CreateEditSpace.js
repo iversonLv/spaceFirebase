@@ -37,42 +37,23 @@ import JoinLeaveBtn from "../common/JoinLeaveBtn/JoinLeaveBtn"
 import SpaceSkeleton from "../common/SpaceSkeleton/SpaceSkeleton"
 
 const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
+  // context
   const { authUser } = useAuth()
   const { fetchSpaces } = useSpaces()
+  // hook
+  const params = useParams();
   const navigate = useNavigate()
+  // state
   const [thumbnail, setThumbnail] = useState()
-  const [disabledBtn, setDisabledBtn] = useState(true)
   const [previewPhoto, setPreviewPhoto] = useState('')
   const [spaceField, setSpaceField] = useState({})
   const [getEditSpaceByIdLoading, setGetEditSpaceByIdLoading] = useState(true)
   
-  const params = useParams();
+  // if form fields and photo are not set, create btn is disabled
+  const disabledBtn = checkObj(spaceField) || !previewPhoto ?  true : false
 
-  const handleSpaceField = (e) => setSpaceField({...spaceField, [e.target.name]: e.target.value })
-  const handleAction = async (action) => {
-    setLoading(true)
-    if (action === CREATE_SPACE_PAGE_TITLE) {
-      //console.log(spaceField, thumbnail)
-      await addSpace(authUser, spaceField, thumbnail)
-    } else {
-      await updateSpace(spaceField, thumbnail, params.spaceId)
-    }
-    await fetchSpaces()
-    setLoading(false)
-    navigate(PROFILE_URL)
-  }
-  const handlekeywordsChange = (tags) => setSpaceField({...spaceField, keywords: [...tags]})
-  const handlePrerequisitesChange = (tags) => setSpaceField({...spaceField, prerequisites: [...tags]})
-  
-  
-  // check form and enable create btn
-  useEffect(() => {
-    if(checkObj(spaceField) || !previewPhoto) {
-      return setDisabledBtn(true)
-    } 
-    setDisabledBtn(false)
-  }, [spaceField, previewPhoto, pageTitle]);
-
+  // UseEffect
+  // If edit page
   useEffect(() => {
     if(pageTitle === EDIT_SPACE_PAGE_TITLE) {
       const unscribe = async() => {
@@ -82,6 +63,7 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
     }
   }, [pageTitle, params.spaceId]);
 
+  // If new page
   useEffect(() => {
     if(pageTitle === CREATE_SPACE_PAGE_TITLE) {
       setGetEditSpaceByIdLoading(false)
@@ -96,10 +78,28 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
 
   }, [pageTitle]);
 
-  const handleBackArrow = () => {
-    // console.log(pathname)
-    navigate(-1)
+  // event function
+
+  // forms
+  const handleSpaceField = (e) => setSpaceField({...spaceField, [e.target.name]: e.target.value })
+  const handlekeywordsChange = (tags) => setSpaceField({...spaceField, keywords: [...tags]})
+  const handlePrerequisitesChange = (tags) => setSpaceField({...spaceField, prerequisites: [...tags]})
+
+  // edit/create btn function
+  const handleAction = async (action) => {
+    setLoading(true)
+    if (action === CREATE_SPACE_PAGE_TITLE) {
+      await addSpace(authUser, spaceField, thumbnail)
+    } else {
+      await updateSpace(spaceField, thumbnail, params.spaceId)
+    }
+    await fetchSpaces()
+    setLoading(false)
+    navigate(PROFILE_URL)
   }
+
+  // back arrow
+  const handleBackArrow = () => navigate(-1)
 
   return (
     <>
