@@ -491,7 +491,7 @@ export const getSpaceActiveUsers = async (spaceId, setActiveUsers) => {
 // get related space base on the keyword
 export const getRelatedSpaces = async (keywords, spaceId, setRelatedSpaces, setIsLoading) => {
   setIsLoading(true)
-  if (keywords) {
+  if (keywords.length > 0) {
     const q = query(collection(db, SPACES_COLLECTION), where('keywords', "array-contains-any", keywords));
     const querySnapshot = await getDocs(q);
     let allRelatedSpaces = []
