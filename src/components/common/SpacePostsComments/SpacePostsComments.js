@@ -21,7 +21,7 @@ import TextForm from "../TextForm/TextForm"
 
 // constants
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
-import PostsCommentsSkeleton from "../PostsCommentsSkeleton/PostsCommentsSkeleton";
+import PostsCommentsSkeleton from "../PostsComments/PostsCommentsSkeleton";
 import { NO_POST, TYPE_POST } from "../../../constants";
 
 const SpacePostsComments = ({spaceAuthorUid, spaceId}) => {

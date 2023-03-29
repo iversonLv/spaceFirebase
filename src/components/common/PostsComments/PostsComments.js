@@ -25,7 +25,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 // Components
 import LikeDislike from "../LikeDislike/LikeDislike";
-import PostsCommentsSkeleton from "../PostsCommentsSkeleton/PostsCommentsSkeleton";
+import PostsCommentsSkeleton from "./PostsCommentsSkeleton";
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
 import CommonAvatar from "../CommonAvatar/CommonAvatar";
 import DividerWithTitle from "../DividerWithTitle/DividerWithTitle";
