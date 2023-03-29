@@ -22,7 +22,7 @@ import useSpaces from '../../../firebase/space'
 
 
 const JoinLeaveBtn = memo(({space, isEditPage=false, loadingDisabled}) => {
-  console.log(space)
+  // TODO: Edit space, memo not work, some props change console.log(space)
   // Context
   const { authUser } = useAuth()
   const { fetchSpaces } = useSpaces()
