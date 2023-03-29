@@ -30,8 +30,8 @@ import { checkObj } from '../../utils/helper'
 // constants
 import { CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE, NO_SUCH_SPACE, PROFILE_URL } from "../../constants"
 import JoinLeaveBtn from "../common/JoinLeaveBtn/JoinLeaveBtn"
-import SpaceSkeleton from "../common/SpaceSkeleton/SpaceSkeleton"
 import BackArrowTitleWithActionBtn from "../common/BackArrowTitleWithActionBtn/BackArrowTitleWithActionBtn";
+import CreateEditSpaceSkeleton from "./CreateEditSpaceSkeleton"
 
 const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
   // context
@@ -103,7 +103,7 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
         <BackArrowTitleWithActionBtn
           title={pageTitle}
         >
-          {pageTitle === EDIT_SPACE_PAGE_TITLE && <JoinLeaveBtn space={{id: params.spaceId, author: {uid: authUser.uid}}} isEditPage={true} loadingDisabled={loading}/>}
+          {pageTitle === EDIT_SPACE_PAGE_TITLE && <JoinLeaveBtn space={{title: spaceField.title, id: params?.spaceId, author: {uid: authUser?.uid}}} isEditPage={true} loadingDisabled={loading}/>}
         </BackArrowTitleWithActionBtn>
         
         <Grid container spacing={4}>

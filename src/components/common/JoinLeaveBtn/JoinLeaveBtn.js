@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // MUI component
@@ -9,6 +9,8 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import CircularProgress from '@mui/material/CircularProgress'
+import Typography from '@mui/material/Typography'
 
 // constants
 import { HOME_URL, SIGN_IN_UP_URL, SPACES_URL } from '../../../constants'
@@ -16,26 +18,36 @@ import { HOME_URL, SIGN_IN_UP_URL, SPACES_URL } from '../../../constants'
 // context
 import useAuth from '../../../firebase/auth'
 import { userJoinSpace, userLeaveSpace, getUserSpaceJoinLeaveState, deleteSpace } from "../../../firebase/firestore";
-import { CircularProgress, Typography } from '@mui/material'
 import useSpaces from '../../../firebase/space'
 
 
-const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
-  const [loading, setLoading] = useState(false)
+const JoinLeaveBtn = memo(({space, isEditPage=false, loadingDisabled}) => {
+  console.log(space)
+  // Context
   const { authUser } = useAuth()
   const { fetchSpaces } = useSpaces()
+  // Hook
   const navigate = useNavigate()
   const location = useLocation()
-  
+
+  // State
+  const [loading, setLoading] = useState(false)
   // snack bar state 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  
+
   const [joined, setJoined] = useState(false)
 
   // dialog
   const [openDialog, setOpenDialog] = useState(false)
   const [actionType, setActionType] = useState('')
+
+  // Effect
+  useEffect(() => {
+    getUserSpaceJoinLeaveState(space.id, authUser, setJoined)
+  }, [space.id, authUser]);
+
+  // Event function
   const handleCloseDialog = (e) => {
     e.stopPropagation();
     setOpenDialog(false)
@@ -62,10 +74,6 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
     setMessage(`${actionType} the space succeed!`);
   }
 
-  useEffect(() => {
-    getUserSpaceJoinLeaveState(space.id, authUser, setJoined)
-  }, [space, authUser]);
-
   const handleJoin = async(e) => {
     // Stop progagation during click the btn on Card
     e.stopPropagation();
@@ -83,13 +91,11 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
     setOpenDialog(true)
   }
   
-
   const handleClickBtn = (e, url) => {
     e.stopPropagation()
     navigate(url)
   }
 
-  
   const handleClose = (e, reason) => {
     // Stop progagation during click the btn on Card
     e?.stopPropagation()
@@ -100,6 +106,7 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
     setOpen(false);
   };
 
+  // Content
   const BTNS = () => {
     if (!authUser) {
       // if non-login show sign up to join, otherwith show join or leave btn
@@ -192,6 +199,6 @@ const JoinLeaveBtn = ({space, isEditPage=false, loadingDisabled}) => {
       </Dialog>
     </>
   )
-}
+})
 
 export default JoinLeaveBtn
