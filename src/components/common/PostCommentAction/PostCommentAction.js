@@ -41,12 +41,9 @@ const PostCommentAction = memo(({
 
   const open = Boolean(anchorEl)
   // Event function
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
+  const handleClick = (event) => setAnchorEl(event.currentTarget)
+  const handleClose = () => setAnchorEl(null)
+  const handleCloseDialog = () => setOpenDialog(false)
   const handleEdit = () => {
     setEditMode(true)
     setAnchorEl(null)
@@ -55,8 +52,6 @@ const PostCommentAction = memo(({
     setOpenDialog(true)
     setAnchorEl(null)
   }
-
-  const handleCloseDialog = () => setOpenDialog(false)
 
   const handleDeletePostComment= async () => {
     setLoading(true)

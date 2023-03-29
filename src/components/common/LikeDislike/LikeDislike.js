@@ -21,10 +21,12 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import { DisLike_T, Like_T } from "../../../constants";
 
 const LikeDislike = memo(({id, type}) => {
+  // Context
   const { authUser } = useAuth()
+  // State
   const [likeDislike, setLikeDislike] = useState("")
   const [likeCount, setLikeCount] = useState()
-  
+  // Effect
   useEffect(() => {
     const fetchUserLikeDislikeState = async() => {
       await getUserLikeDislikeState(type, id, authUser.uid, setLikeDislike)
@@ -39,6 +41,7 @@ const LikeDislike = memo(({id, type}) => {
     fetchLikeCounts()
   }, [id, type]);
   
+  // Event function
     // why not use onChange but onClick
   // Because it need be able to reset both state
   const handleLikeDislike = async(e, id) => {
