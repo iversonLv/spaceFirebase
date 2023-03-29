@@ -15,8 +15,7 @@ const NavBtn = ({route, label}) => {
         '&.active': {
           borderColor: 'white'
         }
-      }}
-      onClick={() => navigate(route)}>
+      }}>
       {label}
     </Button>
   )
