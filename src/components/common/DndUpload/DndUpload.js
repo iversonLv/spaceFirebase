@@ -1,19 +1,17 @@
-import { Box, Typography } from "@mui/material";
-import { useState, useRef, memo } from "react";
+import { useState, memo } from "react";
 
+// MUI components
+import { Box, Typography } from "@mui/material";
+// MUI icons
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 import './DndUpload.css'
+
 const DndUpload = memo(({setThumbnail, previewPhoto, setPreviewPhoto, disabled, shape='retangle'}) => {
-  // drag state
+  // state
   const [dragActive, setDragActive] = useState(false);
-  
-  // ref
-  const inputRef = useRef(null);
-  const handleFiles = (files) =>  {
-    setThumbnail(files[0])
-    setPreviewPhoto(URL.createObjectURL(files[0]));
-  }
+
+  // Event function
   // handle drag events
   const handleDrag = function (e) {
     e.preventDefault();
@@ -35,6 +33,11 @@ const DndUpload = memo(({setThumbnail, previewPhoto, setPreviewPhoto, disabled, 
     }
   };
 
+  const handleFiles = (files) =>  {
+    setThumbnail(files[0])
+    setPreviewPhoto(URL.createObjectURL(files[0]));
+  }
+
   // triggers when file is selected with click
   const handleChange = function (e) {
     e.preventDefault();
@@ -51,11 +54,9 @@ const DndUpload = memo(({setThumbnail, previewPhoto, setPreviewPhoto, disabled, 
         onSubmit={(e) => e.preventDefault()}
       >
         <input
-          ref={inputRef}
           type="file"
           id="input-file-upload"
           accept="image/png, image/jpeg"
-          multiple={true}
           onChange={handleChange}
           disabled={disabled}
         />
