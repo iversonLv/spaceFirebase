@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 
-
+import { deletePostComment } from '../../../firebase/firestore'
 // Mui components
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
@@ -9,28 +9,38 @@ import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
-
-// Mui icons
-import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined'
-
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import { deletePostComment } from '../../../firebase/firestore'
 import { CircularProgress } from '@mui/material'
-import { TYPE_POST } from '../../../constants'
 
-const PostCommentAction = ({type, id, uid, authUserId, exportPdfLoading, spaceId, parentId, postId, setEditMode, handleExportPDF}) => {
-   const [anchorEl, setAnchorEl] = useState(null)
+// Mui icons
+import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+
+const PostCommentAction = memo(({
+  // TODO: edit space post area will affect the rerender
+  type,
+  id,
+  uid,
+  authUserId,
+  spaceId,
+  parentId,
+  postId,
+  setEditMode,
+}) => {
+  console.log(1)
+  // State 
+  const [anchorEl, setAnchorEl] = useState(null)
    
-  const open = Boolean(anchorEl)
   const [openDialog, setOpenDialog] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const open = Boolean(anchorEl)
+  // Event function
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -46,9 +56,7 @@ const PostCommentAction = ({type, id, uid, authUserId, exportPdfLoading, spaceId
     setAnchorEl(null)
   }
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+  const handleCloseDialog = () => setOpenDialog(false)
 
   const handleDeletePostComment= async () => {
     setLoading(true)
@@ -97,14 +105,6 @@ const PostCommentAction = ({type, id, uid, authUserId, exportPdfLoading, spaceId
               <ListItemText>Delete</ListItemText>
             </MenuItem>
           }
-          {type === TYPE_POST && 
-            <MenuItem onClick={handleExportPDF} disabled={exportPdfLoading}>
-              <ListItemIcon>
-                <IosShareOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText>To PDF</ListItemText>
-            </MenuItem>
-          }
         </Menu>
       </Box>
       <Dialog
@@ -137,6 +137,6 @@ const PostCommentAction = ({type, id, uid, authUserId, exportPdfLoading, spaceId
       </Dialog>
     </>
   )
-}
+})
 
 export default PostCommentAction

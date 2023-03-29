@@ -1,11 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-
-// For PDF
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-
 // Markdown editor
 import MDEditor from '@uiw/react-md-editor';
 
@@ -76,20 +71,6 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
   const handleCancelUpdatePost =() => {
     setEditMode(false)
     setPost({title: data?.title, content: data?.content})
-  }
-
-  
-  // PDF
-  const [exportPdfLoading, setExportPdfLoading] = useState(false)
-  const handleExportPDF = async () => {
-    setExportPdfLoading(true)
-    const canvas  = await html2canvas(postRef.current)
-    const imgData = canvas.toDataURL("image/png")
-    const pdf = new jsPDF()
-    pdf.addImage(imgData, "JPEG", 0, 0)
-    pdf.save(`Post-${data?.title}.pdf`)
-    
-    setExportPdfLoading(false)
   }
 
   // For accessibility
@@ -359,8 +340,6 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
         
           
           <PostCommentAction
-            handleExportPDF={handleExportPDF}
-            exportPdfLoading={exportPdfLoading}
             type={type}
             id={id}
             authUserId={authUser?.uid}
