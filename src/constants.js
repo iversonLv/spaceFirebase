@@ -18,6 +18,10 @@ export const USERS_URL = '/users'
 export const SPACES_URL = '/spaces'
 export const SIGN_IN_UP_URL = '/signinup'
 
+// Exteral URL
+export const MY_GITHUB_URL = 'https://github.com/iversonLv'
+export const PROJECT_GITHUB_URL = 'https://github.com/iversonLv/spaceFirebase'
+
 // header menu
 export const loginedNavItem = [
   {'label': 'Profile', 'route': PROFILE_URL}, 

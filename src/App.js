@@ -2,12 +2,17 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-
 import { useState, useEffect } from 'react'
 
 // MUI component
-import { Box } from "@mui/system"
+import Box from "@mui/material/Box"
 import Toolbar from '@mui/material/Toolbar'
 import LinearProgress from '@mui/material/LinearProgress'
+import Container from '@mui/material/Container'
 
 // components
 import Header from './components/common/Header/Header'
+import CreateEditSpace from './components/CreateEditSpace/CreateEditSpace'
+import Signinup from './components/Signinup/Signinup'
+import ProfileEdit from './components/ProfileEdit/ProfileEdit'
+import Footer from './components/common/Footer/Footer'
 
 // Pages
 import Home from './components/Home/Home'
@@ -21,10 +26,6 @@ import useAuth from './firebase/auth'
 
 // constatns
 import { HOME_URL, SIGN_IN_UP_URL, USERS_URL, SPACES_URL, PROFILE_URL, CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE } from './constants'
-import CreateEditSpace from './components/CreateEditSpace/CreateEditSpace'
-import Signinup from './components/Signinup/Signinup'
-import { Container } from '@mui/material'
-import ProfileEdit from './components/ProfileEdit/ProfileEdit'
 
 
 const RequireAuth = ({ children }) => {
@@ -140,6 +141,7 @@ const App = () => {
               </Routes>
             </Container>
           </Box>
+          <Footer />
       </div>
   );
 }
