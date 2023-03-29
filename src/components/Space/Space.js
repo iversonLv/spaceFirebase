@@ -7,11 +7,7 @@ import './Space.css'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
 import { Chip, Grid, Paper } from '@mui/material'
-
-// Mui icons
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 // react tags
 import TagsInput from 'react-tagsinput'
@@ -36,6 +32,7 @@ import { HOME_URL, NO_RELATED_SPACE, NO_SUCH_SPACE, SIGN_IN_UP_URL } from '../..
 import SpaceSkeleton from '../common/SpaceSkeleton/SpaceSkeleton'
 import useSpaces from '../../firebase/space'
 import DividerWithTitle from '../common/DividerWithTitle/DividerWithTitle'
+import BackArrowTitleWithActionBtn from '../common/BackArrowTitleWithActionBtn/BackArrowTitleWithActionBtn'
 
 const Space = () => {
   const navigate = useNavigate();
@@ -55,10 +52,6 @@ const Space = () => {
     return () => unscribe()
   }, [params.spaceId, setGetSpaceByIdLoading]);
 
-  const handleBackArrow = () => {
-    navigate(-1)
-  }
-
   const filterKeywordsForSpace = (e, keyword) => {
     e.stopPropagation();
     navigate(`${HOME_URL}?keywords=${keyword}`)
@@ -70,26 +63,9 @@ const Space = () => {
       {getSpaceByIdLoading && <SpaceSkeleton />}
       {!!Object.keys(space).length && !getSpaceByIdLoading && (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
+          <BackArrowTitleWithActionBtn
+            title={space?.title}
           >
-            <Typography
-              variant="h4"
-              gutterBottom
-              sx={{
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <IconButton color="primary" aria-label="back" variant="outlined" onClick={handleBackArrow}>
-                <ArrowBackIosNewOutlinedIcon/>
-              </IconButton>
-              {space?.title}
-            </Typography>
             <Box
               sx={{
                 display: 'flex',
@@ -98,7 +74,8 @@ const Space = () => {
             >
               {space && <JoinLeaveBtn space={space}/>}
             </Box>
-          </Box>
+          </BackArrowTitleWithActionBtn>
+          
           <Paper elevation={0}
             sx={{
               display: 'flex',

@@ -3,16 +3,12 @@ import { useNavigate, useParams } from "react-router-dom"
 
 // MUI component
 import {
-  Box,
   Typography,
   TextField,
-  IconButton,
   Button,
   Grid
 } from "@mui/material"
 
-// Mui icons
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 // reactJs tagss
 import TagsInput from 'react-tagsinput'
@@ -35,6 +31,7 @@ import { checkObj } from '../../utils/helper'
 import { CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE, NO_SUCH_SPACE, PROFILE_URL } from "../../constants"
 import JoinLeaveBtn from "../common/JoinLeaveBtn/JoinLeaveBtn"
 import SpaceSkeleton from "../common/SpaceSkeleton/SpaceSkeleton"
+import BackArrowTitleWithActionBtn from "../common/BackArrowTitleWithActionBtn/BackArrowTitleWithActionBtn";
 
 const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
   // context
@@ -98,37 +95,17 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
     navigate(PROFILE_URL)
   }
 
-  // back arrow
-  const handleBackArrow = () => navigate(-1)
-
   return (
     <>
     {getEditSpaceByIdLoading && <SpaceSkeleton />}
     {!!Object.keys(spaceField).length && !getEditSpaceByIdLoading && (
       <>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
+        <BackArrowTitleWithActionBtn
+          title={pageTitle}
         >
-          <Typography
-            variant="h4"
-            gutterBottom
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              textTransform: 'uppercase'
-            }}
-          >
-            <IconButton color="primary" aria-label="back" variant="outlined" onClick={handleBackArrow}>
-              <ArrowBackIosNewOutlinedIcon/>
-            </IconButton>
-            {pageTitle}
-          </Typography>
           {pageTitle === EDIT_SPACE_PAGE_TITLE && <JoinLeaveBtn space={{id: params.spaceId, author: {uid: authUser.uid}}} isEditPage={true} loadingDisabled={loading}/>}
-        </Box>
+        </BackArrowTitleWithActionBtn>
+        
         <Grid container spacing={4}>
           <Grid item xs={12} sm={12} lg={4}>
             <DndUpload

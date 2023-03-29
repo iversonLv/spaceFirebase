@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 
 // Mui components
-import { Box, Button, Grid, IconButton, Paper, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material'
+import { Box, Button, Grid, Paper, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material'
 // Mui icons
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 // reactJs tagss
 import TagsInput from 'react-tagsinput'
@@ -12,13 +11,12 @@ import 'react-tagsinput/react-tagsinput.css'
 import SelectCountry from "../common/SelectCountry/SelectCountry"
 import TextForm from "../common/TextForm/TextForm"
 import useAuth from "../../firebase/auth";
-import { useNavigate } from "react-router-dom";
 import SnackbarAlert from "../common/SnackbarAlert/SnackbarAlert";
 import DndUpload from "../common/DndUpload/DndUpload";
 import DividerWithTitle from "../common/DividerWithTitle/DividerWithTitle";
+import BackArrowTitleWithActionBtn from "../common/BackArrowTitleWithActionBtn/BackArrowTitleWithActionBtn";
 
 const ProfileEdit = ({loading, setLoading}) => {
-  const navigate = useNavigate()
   const { authUser, updateUserInfo, forgotPassword, reAuthWithPassword, updateUserPassword } = useAuth()
   const { biography, uid, country: userCountry, interests: userInsterests, photoURL } = authUser
   
@@ -83,11 +81,6 @@ const ProfileEdit = ({loading, setLoading}) => {
   const handleDeletePhoto = () => {
     setThumbnail(null)
     setPreviewPhoto(null)
-  }
-
-  const handleBackArrow = () => {
-    // console.log(pathname)
-    navigate(-1)
   }
 
   // snack bar state 
@@ -166,28 +159,7 @@ const ProfileEdit = ({loading, setLoading}) => {
   
   return(
     <>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            textTransform: 'uppercase'
-          }}
-        >
-          <IconButton color="primary" aria-label="back" variant="outlined" onClick={handleBackArrow}>
-            <ArrowBackIosNewOutlinedIcon/>
-          </IconButton>
-          Edit Profile
-        </Typography>
-      </Box>
+      <BackArrowTitleWithActionBtn title='Edit Profile' />
       <Grid container spacing={4}>
         <Grid item xs={12} sm={12} lg={4}>
           {/* avatar */}
