@@ -32,8 +32,9 @@ import { CREATE_SPACE_PAGE_TITLE, EDIT_SPACE_PAGE_TITLE, NO_SUCH_SPACE, PROFILE_
 import JoinLeaveBtn from "../common/JoinLeaveBtn/JoinLeaveBtn"
 import BackArrowTitleWithActionBtn from "../common/BackArrowTitleWithActionBtn/BackArrowTitleWithActionBtn";
 import CreateEditSpaceSkeleton from "./CreateEditSpaceSkeleton"
+import ProgressLoading from "../common/ProgressLoading/ProgressLoading"
 
-const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
+const CreateEditSpace = ({ pageTitle }) => {
   // context
   const { authUser } = useAuth()
   const { fetchSpaces } = useSpaces()
@@ -45,6 +46,8 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
   const [previewPhoto, setPreviewPhoto] = useState('')
   const [spaceField, setSpaceField] = useState({})
   const [getEditSpaceByIdLoading, setGetEditSpaceByIdLoading] = useState(true)
+  // loading state
+  const [loading, setLoading] = useState(false);
   
   // if form fields and photo are not set, create btn is disabled
   const disabledBtn = checkObj(spaceField) || !previewPhoto ?  true : false
@@ -100,6 +103,7 @@ const CreateEditSpace = ({ loading, setLoading, pageTitle }) => {
     {getEditSpaceByIdLoading && <CreateEditSpaceSkeleton />}
     {!!Object.keys(spaceField).length && !getEditSpaceByIdLoading && (
       <>
+        {loading && <ProgressLoading />}
         <BackArrowTitleWithActionBtn
           title={pageTitle}
         >

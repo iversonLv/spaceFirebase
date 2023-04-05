@@ -1,9 +1,7 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import { HashRouter} from 'react-router-dom'
 import { AuthUserProvider } from './firebase/auth'
 import { SpacesProvider } from './firebase/space'
 
@@ -13,9 +11,7 @@ root.render(
   // <React.StrictMode>
     <SpacesProvider>
       <AuthUserProvider>
-        <HashRouter>
-          <App />
-        </HashRouter>
+        <App />
       </AuthUserProvider>
     </SpacesProvider>
   // </React.StrictMode>

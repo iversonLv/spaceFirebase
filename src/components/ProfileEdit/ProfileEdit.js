@@ -15,8 +15,9 @@ import SnackbarAlert from "../common/SnackbarAlert/SnackbarAlert";
 import DndUpload from "../common/DndUpload/DndUpload";
 import DividerWithTitle from "../common/DividerWithTitle/DividerWithTitle";
 import BackArrowTitleWithActionBtn from "../common/BackArrowTitleWithActionBtn/BackArrowTitleWithActionBtn";
+import ProgressLoading from "../common/ProgressLoading/ProgressLoading"
 
-const ProfileEdit = ({loading, setLoading}) => {
+const ProfileEdit = () => {
   const { authUser, updateUserInfo, forgotPassword, reAuthWithPassword, updateUserPassword } = useAuth()
   const { biography, uid, country: userCountry, interests: userInsterests, photoURL } = authUser
   
@@ -28,6 +29,10 @@ const ProfileEdit = ({loading, setLoading}) => {
   
   const [thumbnail, setThumbnail] = useState()
   const [previewPhoto, setPreviewPhoto] = useState(photoURL)
+  
+  // loading state
+  const [loading, setLoading] = useState(false);
+
   // useEffect(() => {
   //  if (
   //   checkObj(otherFields)||
@@ -159,6 +164,7 @@ const ProfileEdit = ({loading, setLoading}) => {
   
   return(
     <>
+      {loading && <ProgressLoading />}
       <BackArrowTitleWithActionBtn title='Edit Profile' />
       <Grid container spacing={4}>
         <Grid item xs={12} sm={12} lg={4}>
