@@ -8,6 +8,7 @@ import MDEditor from '@uiw/react-md-editor';
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   Drawer,
   IconButton,
@@ -15,6 +16,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  TextField,
   Typography
 } from "@mui/material"
 // MUI icons
@@ -25,8 +27,8 @@ import { TYPE_COMMENT, TYPE_POST, USERS_URL } from '../../../constants'
 
 // components
 import PostsComments from '../PostsComments/PostsComments';
-import PostCommentAction from '../PostCommentAction/PostCommentAction';
 import CommonAvatar from '../CommonAvatar/CommonAvatar';
+import PostCommentAction from '../PostCommentAction/PostCommentAction';
 import DateTillToday from '../DateTillToday/DateTillToday';
 import DividerWithTitle from '../DividerWithTitle/DividerWithTitle';
 import TextForm from '../TextForm/TextForm';
@@ -53,11 +55,18 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
 
   const handleUpdateComment = async() => {
     setDisabledUpdated(true)
-    await updateCommentPost(comment, type, id)
-    // await getComments(type, id, setComments)
-    setEditMode(false)
-    setDisabledUpdated(false)
-    // getCommentsCounts(type, id, setCommentsCount)
+    try {
+      await updateCommentPost(comment, type, id)
+    }
+    catch(error) {
+      console.log(error)
+    }
+    finally {
+      // await getComments(type, id, setComments)
+      setEditMode(false)
+      setDisabledUpdated(false)
+      // getCommentsCounts(type, id, setCommentsCount)
+    }
 
   }
   
@@ -68,9 +77,16 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
 
   const handleUpdatePost = async() => {
     setDisabledUpdatePost(true)
-    await updateCommentPost(post, type, id)
-    setEditMode(false)
-    setDisabledUpdatePost(false)
+    try {
+      await updateCommentPost(post, type, id)
+    }
+    catch(error) {
+      console.log(error)
+    }
+    finally {
+      setEditMode(false)
+      setDisabledUpdatePost(false)
+    }
   }
 
   const handleCancelUpdatePost =() => {
@@ -135,7 +151,24 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
                 @{data?.postCommentAuthor?.displayName}
               </Button>
             )}
-            {!editMode && <MDEditor.Markdown source={data?.content} />}
+            {!editMode && <TextField
+              fullWidth
+              margin='none'
+              name='comment'
+              multiline
+              defaultValue={data?.content}
+              variant='standard'
+              InputProps={{
+                readOnly: true,
+              }}
+              sx={{
+                '& .MuiInput-root': {
+                  '&:before, :after, :hover:not(.Mui-disabled):before': {
+                    borderBottom: 0,
+                  },
+                },
+              }}
+            />}
 
 
       {editMode && type === TYPE_COMMENT && (
@@ -152,71 +185,107 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
         open={editMode}
         onClose={handleCloseDrawer}
       >
+         {disabledUpdated &&
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
-              p: '8px 16px'
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
           >
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1}}
-            >
-              Comment
-            </Typography>
-            <IconButton onClick={toggleDrawer(false)}>
-              <CloseOutlinedIcon/>
-            </IconButton>
+            <CircularProgress color="inherit" />
           </Box>
-          <MDEditor
-            visibleDragbar={false}
-            value={comment}    
-            onChange={(value) => setComment(value)}
-            preview="edit"
-            hideToolbar={true}
-            height='50%'
-          />
-          <DividerWithTitle title='Preview' />
-          <MDEditor.Markdown source={comment} style={{ whiteSpace: 'pre-wrap', padding: '0 15px 15px', height: '30%' }} />
-          <Box
-            sx={{
-              mt: 'auto'
-            }}
-          >
-            <Divider/>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '15px',
-                p: '15px',
-                justifyContent: 'flex-end'
-              }}
-            >
-              <Button variant="outlined" disabled={disabledUpdated || !comment} onClick={ handleUpdateComment}>Update</Button>
-              <Button variant='text' onClick={handleCancel}>Cancel</Button>
-            </Box>
-          </Box>
+          }
+          {!disabledUpdated &&
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  p: '8px 16px'
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1}}
+                >
+                  Comment
+                </Typography>
+                <IconButton onClick={toggleDrawer(false)}>
+                  <CloseOutlinedIcon/>
+                </IconButton>
+              </Box>
+              <TextField
+                fullWidth
+                margin='normal'
+                name='comment'            
+                label="Comment"
+                onChange={e => setComment(e.target.value)}
+                multiline
+                value={comment}
+                variant='standard'
+              />
+              <Box
+                sx={{
+                  mt: 'auto',
+                  display: 'flex',
+                  gap: '15px',
+                  p: '15px',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                <Button variant="outlined" disabled={!comment} onClick={ handleUpdateComment}>Update</Button>
+                <Button variant='text'onClick={handleCancel}>Cancel</Button>
+              </Box>
+            </>
+          }
         </Drawer>
+
+
         <Box
           sx={{
             display: { xs: 'none', sm: 'flex' },
-            m: '15px 0',
-            gap: '15px',
-            alignItems: 'flex-start',
+            flexDirection: 'column'
           }}
         >
-          <MDEditor
-            style={{width: '500px'}}
-            value={comment}    
-            onChange={(value) => setComment(value)}
-            height={100}
-            hideToolbar={true}
-          />
-          {id} {type}
-          <Button variant="outlined" size="small" disabled={disabledUpdated || !comment} onClick={ handleUpdateComment}>Update</Button>
-          <Button variant="text" size="small" onClick={handleCancel}>Cancel</Button>
+          {disabledUpdated && 
+            <Box
+              sx={{
+                display: 'flex',
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <CircularProgress color="inherit" />
+            </Box>
+          }
+          {!disabledUpdated &&
+            <>
+              <TextField
+                fullWidth
+                margin='none'
+                name='comment'
+                onChange={e => setComment(e.target.value)}
+                multiline
+                value={comment}
+                variant='standard'
+              />
+              <Box
+                sx={{
+                  display: 'flex',
+                  m: '15px 0',
+                  gap: '15px',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                <Button variant="outlined" size="small" disabled={!comment} onClick={ handleUpdateComment}>Update</Button>
+                <Button variant="text" size="small" onClick={handleCancel}>Cancel</Button>
+              </Box>
+            </>
+          }
         </Box>
       </>
       )}
@@ -235,68 +304,84 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
             open={editMode}
             onClose={handleCloseDrawer}
           >
+            {disabledUpdatePost && 
               <Box
                 sx={{
                   display: 'flex',
-                  alignItems: 'center',
-                  p: '8px 16px'
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ flexGrow: 1}}
-                >
-                  Post
-                </Typography>
-                <IconButton onClick={toggleDrawer(false)}>
-                  <CloseOutlinedIcon/>
-                </IconButton>
+                <CircularProgress color="inherit" />
               </Box>
-              <Divider/>
-                <TextForm
-                  variant="standard"
-                  name='postTitle'
-                  value={post?.title || ''}
-                  required={true}
-                  disabled={disabledUpdatePost}
-                  handleChange={(e) => setPost({...post, title: e.target.value})}
-                  sx={{
-                    flexGrow: 1,
-                    mx: '15px',
-                    width: 'auto',
-                    mt: '15px'
-                  }}
-                  margin='none'
-                />
-                <MDEditor
-                  visibleDragbar={false}
-                  preview="edit"
-                  height='50%'
-                  value={post.content}
-                  onChange={(value) => setPost({...post, content: value})}
-                />
-
-              <DividerWithTitle title='Preview' />
-              <MDEditor.Markdown source={post.content} style={{ whiteSpace: 'pre-wrap', padding: '0 15px 15px', height: '30%' }} />
-              <Box
-                sx={{
-                  mt: 'auto'
-                }}
-              >
-                <Divider/>
+            }
+            {!disabledUpdatePost && 
+              <>
                 <Box
                   sx={{
                     display: 'flex',
-                    gap: '15px',
-                    p: '15px',
-                    justifyContent: 'flex-end'
+                    alignItems: 'center',
+                    p: '8px 16px'
                   }}
                 >
-                  <Button variant="outlined" disabled={disabledUpdatePost || (!post?.title || !post?.content)} onClick={ handleUpdatePost}>Update</Button>
-                  <Button variant="text" onClick={handleCancelUpdatePost}>Cancel</Button>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1}}
+                  >
+                    Post
+                  </Typography>
+                  <IconButton onClick={toggleDrawer(false)}>
+                    <CloseOutlinedIcon/>
+                  </IconButton>
                 </Box>
-              </Box>
+                <Divider/>
+                  <TextForm
+                    variant="standard"
+                    name='postTitle'
+                    value={post?.title || ''}
+                    required={true}
+                    disabled={disabledUpdatePost}
+                    handleChange={(e) => setPost({...post, title: e.target.value})}
+                    sx={{
+                      flexGrow: 1,
+                      mx: '15px',
+                      width: 'auto',
+                      mt: '15px'
+                    }}
+                    margin='none'
+                  />
+                  <MDEditor
+                    visibleDragbar={false}
+                    preview="edit"
+                    height='50%'
+                    value={post.content}
+                    onChange={(value) => setPost({...post, content: value})}
+                  />
+
+                <DividerWithTitle title='Preview' />
+                <MDEditor.Markdown source={post.content} style={{ whiteSpace: 'pre-wrap', padding: '0 15px 15px', height: '30%' }} />
+                <Box
+                  sx={{
+                    mt: 'auto'
+                  }}
+                >
+                  <Divider/>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '15px',
+                      p: '15px',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <Button variant="outlined" disabled={!post?.title || !post?.content} onClick={ handleUpdatePost}>Update</Button>
+                    <Button variant="text">Cancel</Button>
+                  </Box>
+                </Box>
+              </>
+            }
             </Drawer>
 
           <Box
@@ -307,53 +392,74 @@ const PostsCommentList = ({data, type, id, spaceAuthorUid}) => {
               alignItems: 'flex-start',
             }}
           >
+            {disabledUpdatePost && 
             <Box
-              sx={{display: 'flex', gap: '15px', flexDirection: 'column'}}
+              sx={{
+                display: 'flex',
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
             >
-              <TextForm
-                name='postTitle'
-                value={post?.title || ''}
-                required={true}
-                disabled={disabledUpdatePost}
-                handleChange={(e) => setPost({...post, title: e.target.value})}
-                sx={{
-                  flexGrow: 1
-                }}
-                margin='none'
-              />
-              <MDEditor
-                style={{width: '500px'}}
-                value={post.content}
-                onChange={(value) => setPost({...post, content: value})}
-              />
+              <CircularProgress color="inherit" />
             </Box>
-            {id} {type}
-            <Button variant="outlined" size="small" disabled={disabledUpdatePost || (!post?.title || !post?.content)} onClick={ handleUpdatePost}>Update</Button>
-            <Button variant="text" size="small" onClick={handleCancelUpdatePost}>Cancel</Button>
+          }
+          {!disabledUpdatePost && 
+            <>
+            <Box
+              sx={{display: 'flex', gap: '15px', flexDirection: 'column', alignitems: 'stretch'}}
+            >
+                <TextForm
+                  name='postTitle'
+                  value={post?.title || ''}
+                  required={true}
+                  disabled={disabledUpdatePost}
+                  handleChange={(e) => setPost({...post, title: e.target.value})}
+                  sx={{
+                    flexGrow: 1
+                  }}
+                  margin='none'
+                />
+                <MDEditor
+                  value={post.content}
+                  onChange={(value) => setPost({...post, content: value})}
+                />
+              </Box>
+              {/* {id} {type} */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '15px',
+                  p: '15px',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                <Button variant="outlined" size="small" disabled={!post?.title || !post?.content} onClick={ handleUpdatePost}>Update</Button>
+                <Button variant="text" size="small" onClick={handleCancelUpdatePost}>Cancel</Button>
+              </Box>
+              </>
+            }
           </Box>
         </>
       )}
-
-
-
-
-
 
            
           {/* {data.id} */}
           </Box>
         
-          
-          <PostCommentAction
-            type={type}
-            id={id}
-            authUserId={authUser?.uid}
-            uid={data?.author?.uid}
-            spaceId={data?.spaceId}
-            parentId={data?.parentId}
-            postId={data?.postId}
-            setEditMode={setEditMode}
-          />
+          {/* only author could update the post comment action */}
+          {authUser?.uid === data?.author?.uid && 
+            <PostCommentAction
+              type={type}
+              id={id}
+              authUserId={authUser?.uid}
+              uid={data?.author?.uid}
+              spaceId={data?.spaceId}
+              parentId={data?.parentId}
+              postId={data?.postId}
+              setEditMode={setEditMode}
+            />
+          }
         </ListItem>
       </List>
             {/* comment list */}

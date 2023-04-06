@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom";
 
-// Markdown editor
-import MDEditor from '@uiw/react-md-editor';
 // Constants
 import { TYPE_COMMENT } from "../../../constants";
 // Firebase
@@ -12,9 +10,10 @@ import useAuth from "../../../firebase/auth";
 import {
   Box,
   Button,
-  Divider,
+  CircularProgress,
   Drawer,
   IconButton,
+  TextField,
   Typography
  } from "@mui/material";
 
@@ -28,7 +27,6 @@ import LikeDislike from "../LikeDislike/LikeDislike";
 import PostsCommentsSkeleton from "./PostsCommentsSkeleton";
 import PostsCommentList from "../PostsCommentList/PostsCommentList";
 import CommonAvatar from "../CommonAvatar/CommonAvatar";
-import DividerWithTitle from "../DividerWithTitle/DividerWithTitle";
 
 const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
   // Context
@@ -67,12 +65,19 @@ const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
 
   const handleAddComment = async(id) => {
     setDisabledCreate(true)
-    await addComment(authUser, id, comment, type, param.spaceId, postCommentAuthor, setGetCommentsLoading)
-    // await getComments(type, id, setComments)
-    setComment('')
-    setSelectedId('')
-    setDisabledCreate(false)
-    // getCommentsCounts(type, id, setCommentsCount)
+    try {
+      await addComment(authUser, id, comment, type, param.spaceId, postCommentAuthor, setGetCommentsLoading)
+    }
+    catch(error) {
+      console.log(error)
+    }
+    finally {
+      // await getComments(type, id, setComments)
+      setComment('')
+      setSelectedId('')
+      setDisabledCreate(false)
+      // getCommentsCounts(type, id, setCommentsCount)
+    }
 
   }
   const handleCancel = () => {
@@ -82,9 +87,16 @@ const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
   
   const handleCommentsCount = async() => {
     setLoading(true)
-    await getComments(type, id, setComments)
-    setLoading(false)
-    setShowComment(true)
+    try {
+      await getComments(type, id, setComments)
+    }
+    catch(error) {
+      console.log(error)
+    }
+    finally {
+      setLoading(false)
+      setShowComment(true)
+    }
   }
 
   // For accessibility
@@ -138,72 +150,115 @@ const PostsComments = ({id, spaceAuthorUid, type, postCommentAuthor}) => {
         open={selectedId === id}
         onClose={handleCloseDrawer}
       >
+        {disabledCreate &&
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
-              p: '8px 16px'
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
           >
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1}}
-            >
-              Post Comment
-            </Typography>
-            <IconButton onClick={toggleDrawer(false)}>
-              <CloseOutlinedIcon/>
-            </IconButton>
+            <CircularProgress color="inherit" />
           </Box>
-          <MDEditor
-            visibleDragbar={false}
-            value={comment}    
-            onChange={(value) => setComment(value)}
-            preview="edit"
-            hideToolbar={true}
-            height='50%'
-          />
-          <DividerWithTitle title='Preview' />
-          <MDEditor.Markdown source={comment} style={{ whiteSpace: 'pre-wrap', padding: '0 15px 15px', height: '30%' }} />
-          <Box
-            sx={{
-              mt: 'auto'
-            }}
-          >
-            <Divider/>
+          }
+        {!disabledCreate &&
+          <>
             <Box
               sx={{
                 display: 'flex',
-                gap: '15px',
-                p: '15px',
-                justifyContent: 'flex-end'
+                alignItems: 'center',
+                p: '8px 16px'
               }}
             >
-              <Button variant="outlined" disabled={disabledCreate || !comment} onClick={ () => handleAddComment(id)}>Comment</Button>
-              <Button variant='text' onClick={handleCancel}>Cancel</Button>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1}}
+              >
+                Post Comment
+              </Typography>
+              <IconButton onClick={toggleDrawer(false)}>
+                <CloseOutlinedIcon/>
+              </IconButton>
             </Box>
-          </Box>
+            <TextField
+              fullWidth
+              margin='normal'
+              name='comment'            
+              label="Comment"
+              onChange={e => setComment(e.target.value)}
+              multiline
+              value={comment}
+              variant='standard'
+            />
+              <Box
+                sx={{
+                  mt: 'auto',
+                  display: 'flex',
+                  gap: '15px',
+                  p: '15px',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                <Button variant="outlined" disabled={!comment} onClick={ () => handleAddComment(id)}>Comment</Button>
+                <Button variant='text' onClick={handleCancel}>Cancel</Button>
+            </Box>
+          </>
+        }
         </Drawer>
 
         <Box
           sx={{
-            display: 'flex',
-            m: '15px 0',
-            gap: '15px',
-            alignItems: 'flex-start',
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column'
           }}
         >
-          <CommonAvatar user={authUser} sx={{width: '30px', height: '30px'}}/>
-          <MDEditor
-            style={{width: '500px'}}
-            value={comment}    
-            onChange={(value) => setComment(value)}
-            height={100}
-            hideToolbar={true}
-          />
-          <Button variant="outlined" size="small" disabled={disabledCreate || !comment} onClick={() => handleAddComment(id)}>Comment</Button>
-          <Button variant="outlined" size="small" onClick={handleCancel}>Cancel</Button>
+          {disabledCreate && 
+            <Box
+              sx={{
+                display: 'flex',
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <CircularProgress color="inherit" />
+            </Box>
+          }
+          {!disabledCreate &&
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '15px',
+                  ml: '65px'
+                }}
+              >
+                <CommonAvatar user={authUser} sx={{width: '30px', height: '30px'}}/>
+                <TextField
+                  fullWidth
+                  margin='none'
+                  name='comment'
+                  onChange={e => setComment(e.target.value)}
+                  multiline
+                  value={comment}
+                  variant='standard'
+                />
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  m: '15px 0',
+                  gap: '15px',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                <Button variant="outlined" size="small" disabled={!comment} onClick={() => handleAddComment(id)}>Comment</Button>
+                <Button variant="outlined" size="small"onClick={handleCancel}>Cancel</Button>
+              </Box>
+            </>
+          }
         </Box>
       </>
       )}
