@@ -28,31 +28,45 @@ const LikeDislike = memo(({id, type}) => {
   const [likeCount, setLikeCount] = useState()
   // Effect
   useEffect(() => {
+    let subscribe = true
     const fetchUserLikeDislikeState = async() => {
-      await getUserLikeDislikeState(type, id, authUser.uid, setLikeDislike)
+      if (subscribe) {
+        await getUserLikeDislikeState(type, id, authUser.uid, setLikeDislike)
+      }
     }
     fetchUserLikeDislikeState()
+    return () => subscribe = false
+    // fetchUserLikeDislikeState()
   }, [authUser.uid, id, type]);
 
   useEffect(() => {
+    let subscribe = true
     const fetchLikeCounts = async() => {
-      await getLikeCounts(type, id, setLikeCount)
+      if (subscribe) {
+        await getLikeCounts(type, id, setLikeCount)
+      }
     }
     fetchLikeCounts()
+    return () => subscribe = false
   }, [id, type]);
   
   // Event function
     // why not use onChange but onClick
   // Because it need be able to reset both state
   const handleLikeDislike = async(e, id) => {
-    if (e.target.value === likeDislike) {
-      setLikeDislike('');
-      await addLikeDislike(type, '', id, authUser.uid)
-      await getLikeCounts(type, id, setLikeCount)
-    } else {
-      setLikeDislike(e.target.value);
-      await addLikeDislike(type, e.target.value, id, authUser.uid)
-      await getLikeCounts(type, id, setLikeCount)
+    try {
+      if (e.target.value === likeDislike) {
+        setLikeDislike('');
+        await addLikeDislike(type, '', id, authUser.uid)
+        await getLikeCounts(type, id, setLikeCount)
+      } else {
+        setLikeDislike(e.target.value);
+        await addLikeDislike(type, e.target.value, id, authUser.uid)
+        await getLikeCounts(type, id, setLikeCount)
+      }
+    }
+    catch(error) {
+      console.log(error)
     }
   };
   return (
