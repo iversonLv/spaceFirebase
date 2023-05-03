@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 
 import {
   onAuthStateChanged,
@@ -30,7 +30,7 @@ const useFirebaseAuth = () => {
     setIsLoading(false)
   }
 
-  const authStateChanged = async(user) => {
+  const authStateChanged = useCallback(async(user) => {
     setIsLoading(true)
     if (!user) {
       clear()
@@ -38,29 +38,33 @@ const useFirebaseAuth = () => {
     }
     
     // if user however
-    const docRef = await doc(db, USERS_COLLECTION, user.uid)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      // const bucket = docSnap.data()?.bucket
-      // getDownloadStorageURL(bucket).then(photoURL => {
-        //   setAuthUser({...docSnap.data(), photoURL})
-        // })
-      setAuthUser({...docSnap.data(), photoURL: await checkBucketData(docSnap.data()?.bucket)})
-    } else {
-      // If we use firebaseUi register, we need check user, and set such user doc to
-      const userData = {
-        uid: user.uid,
-        displayName: user.displayName,
-        createdOn: serverTimestamp(),
-        bucket: ''
-      }
-      // doc.data() will be undefined in this case
-      await setDoc(doc(db, USERS_COLLECTION, user.uid), userData);
-      setAuthUser({...userData})
-    }
-    setIsLoading(false)
+    try{
 
-  }
+      const docRef = await doc(db, USERS_COLLECTION, user.uid)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        // const bucket = docSnap.data()?.bucket
+        // getDownloadStorageURL(bucket).then(photoURL => {
+          //   setAuthUser({...docSnap.data(), photoURL})
+          // })
+        setAuthUser({...docSnap.data(), photoURL: await checkBucketData(docSnap.data()?.bucket)})
+      } else {
+        // If we use firebaseUi register, we need check user, and set such user doc to
+        const userData = {
+          uid: user.uid,
+          displayName: user.displayName,
+          createdOn: serverTimestamp(),
+          bucket: ''
+        }
+        // doc.data() will be undefined in this case
+        await setDoc(doc(db, USERS_COLLECTION, user.uid), userData);
+        setAuthUser({...userData})
+      }
+    } catch(err) { console.log(err) } finally {
+      setIsLoading(false)
+    }
+
+  }, [])
 
   const logout = () => signOut(auth).then(() => clear())
 
@@ -169,8 +173,7 @@ const useFirebaseAuth = () => {
     // setTimeout(() => {
     // }, 0);
     return () => unscribe()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [authStateChanged])
   const contextValue  = useMemo(() => ({
     authUser
   }), [authUser])

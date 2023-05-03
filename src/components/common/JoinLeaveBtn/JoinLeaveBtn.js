@@ -56,22 +56,31 @@ const JoinLeaveBtn = memo(({space, isEditPage=false, loadingDisabled}) => {
     e.stopPropagation();
     setOpen(false);
     setLoading(true)
-    if (actionType === 'Leave') {
-      await userLeaveSpace(authUser, space.id)
-    } else {
-      await deleteSpace(authUser.uid, space)
-      // if at space detail page, should navigate to other page
-      if (location.pathname.indexOf('spaces') >= 0) {
-        navigate(HOME_URL)
+    try{
+      if (actionType === 'Leave') {
+        await userLeaveSpace(authUser, space.id)
       } else {
-        // if at profile page or home page
-        await fetchSpaces()
+        await deleteSpace(authUser.uid, space)
+        // if at space detail page, should navigate to other page
+        if (location.pathname.indexOf('spaces') >= 0) {
+          navigate(HOME_URL)
+        } else {
+          // if at profile page or home page
+          await fetchSpaces()
+        }
       }
+      setOpen(true);
+      setMessage(`${actionType} the space succeed!`);
     }
-    setLoading(false)
-    setOpenDialog(false)
-    setOpen(true);
-    setMessage(`${actionType} the space succeed!`);
+    catch(error) {
+      setOpen(true);
+      setMessage(error);
+    }
+    finally {
+      setLoading(false)
+      setOpenDialog(false)
+    }
+    
   }
 
   const handleJoin = async(e) => {
@@ -79,10 +88,18 @@ const JoinLeaveBtn = memo(({space, isEditPage=false, loadingDisabled}) => {
     e.stopPropagation();
     setOpen(false);
     setLoading(true)
-    await userJoinSpace(authUser, space.id)
-    setLoading(false)
-    setOpen(true);
-    setMessage('Congrates, you have joined the space.')
+    try{
+      await userJoinSpace(authUser, space.id)
+      setOpen(true);
+      setMessage('Congrates, you have joined the space.')
+    }
+    catch(error) {
+      setOpen(true);
+      setMessage(error);
+    }
+    finally{
+      setLoading(false)
+    }
   }
 
   const handleOpenDialog = (e, actionType) => {

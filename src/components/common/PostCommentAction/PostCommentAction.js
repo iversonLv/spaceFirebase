@@ -55,9 +55,16 @@ const PostCommentAction = memo(({
 
   const handleDeletePostComment= async () => {
     setLoading(true)
-    await deletePostComment(type, id, uid, spaceId, parentId, postId)
-    setLoading(false)
-    setOpenDialog(false)
+    try {
+      await deletePostComment(type, id, uid, spaceId, parentId, postId)
+    }
+    catch(error) {
+      console.log(error)
+    }
+    finally {
+      setLoading(false)
+      setOpenDialog(false)
+    }
   }
 
   return (
